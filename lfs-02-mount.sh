@@ -3,7 +3,7 @@
 
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
-#mkdir -pv $LFS
-
-JJJ=$(getConf LFS_ROOT_PARTITION)
-echo JJJ = $JJJ
+mkdir -pv $LFS
+mount -v $(getConf LFS_ROOT_PARTITION) $LFS
+mkdir -pv $LFS/boot/efi
+mount -v $(getConf LFS_EFI_PARTITION) $LFS/boot/efi
