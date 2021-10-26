@@ -11,6 +11,7 @@ export LFS=/mnt/lfs
 echo LFS=$LFS
 
 function getConf() {
-    RETURN=$(cat `dirname ${BASH_SOURCE[0]}`/lfs.conf | grep $1 | awk -F "=" '/=/ {print $ 2}')
-    echo $RETURN
+    str=$(cat `dirname ${BASH_SOURCE[0]}`/lfs.conf | grep $1)
+    ret=${str#*=}
+    echo $ret
 }

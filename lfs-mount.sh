@@ -7,5 +7,7 @@ mkdir -pv $LFS
 mount -v $(getConf LFS_ROOT_PARTITION) $LFS
 mkdir -pv $LFS/boot/efi
 mount -v $(getConf LFS_EFI_PARTITION) $LFS/boot/efi
+mkdir -pv $LFS/home
+mount -v $(getConf LFS_HOME_PARTITION) $LFS/home
 mkdir -pv $LFS/sources
 chmod -v a+wt $LFS/sources
