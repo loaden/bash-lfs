@@ -7,6 +7,7 @@ apt install build-essential -y
 apt install bison -y
 apt install gawk -y
 apt install texinfo -y
+apt install bc -y
 apt autopurge -y
 
 echo
