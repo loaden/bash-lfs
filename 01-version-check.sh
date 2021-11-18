@@ -7,6 +7,7 @@ apt install build-essential -y
 apt install bison -y
 apt install gawk -y
 apt install texinfo -y
+apt autopurge -y
 
 echo
 source `dirname ${BASH_SOURCE[0]}`/version-check.sh
