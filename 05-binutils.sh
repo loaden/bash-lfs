@@ -3,10 +3,9 @@
 
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
-pkg_name=binutils
 pushd $LFS/sources/$(getConf LFS_VERSION)
-    tar -xvf $(find . -maxdepth 1 -type f -name $pkg_name-*.tar.*)
-    cd $(find . -maxdepth 1 -type d -name "$pkg_name-*")
+    tar --keep-newer-files -xvf $(find . -maxdepth 1 -type f -name binutils-*.tar.*) 2>/dev/null
+    cd $(find . -maxdepth 1 -type d -name "binutils-*")
     mkdir -v build
     cd build
     ../configure --prefix=$LFS/tools    \
