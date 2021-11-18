@@ -10,4 +10,5 @@ apt install texinfo -y
 apt autopurge -y
 
 echo
+ln -sf /usr/bin/bash /bin/sh
 source `dirname ${BASH_SOURCE[0]}`/version-check.sh
