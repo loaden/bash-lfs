@@ -28,7 +28,7 @@ chown -v lfs $LFS/sources
 # 一些商业发行版未做文档说明地将 /etc/bash.bashrc 引入 bash 初始化过程。
 # 该文件可能修改 lfs 用户的环境，并影响 LFS 关键软件包的构建。
 # TODO: 或者unset是更好的选择？
-[ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.bak
+# [ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.bak
 
 su - lfs
 cat > ~/.bash_profile << "EOF"
