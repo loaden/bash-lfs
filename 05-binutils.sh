@@ -4,11 +4,12 @@
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
 pushd $LFS/sources/$(getConf LFS_VERSION)
-    tar --keep-newer-files -xvf $(find . -maxdepth 1 -type f -name binutils-*.tar.*) 2>/dev/null
+    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name binutils-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "binutils-*")
     mkdir -v build
     cd build
-    ../configure --prefix=$LFS/tools    \
+    [ ! $DONT_CONFIG ] && ../configure  \
+        --prefix=$LFS/tools             \
         --with-sysroot=$LFS             \
         --target=$LFS_TGT               \
         --disable-nls                   \

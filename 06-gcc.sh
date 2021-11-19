@@ -4,18 +4,18 @@
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
 pushd $LFS/sources/$(getConf LFS_VERSION)
-    tar --keep-newer-files -xvf $(find . -maxdepth 1 -type f -name gcc-*.tar.*) 2>/dev/null
+    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name gcc-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "gcc-*")
 
-    tar --keep-newer-files -xvf $(find .. -maxdepth 1 -type f -name mpfr-*.tar.*) 2>/dev/null
+    tar -xf $(find .. -maxdepth 1 -type f -name mpfr-*.tar.*)
     rm -rf mpfr
     mv -v $(find . -maxdepth 1 -type d -name "mpfr-*") mpfr
 
-    tar --keep-newer-files -xvf $(find .. -maxdepth 1 -type f -name gmp-*.tar.*) 2>/dev/null
+    tar -xf $(find .. -maxdepth 1 -type f -name gmp-*.tar.*)
     rm -rf gmp
     mv -v $(find . -maxdepth 1 -type d -name "gmp-*") gmp
 
-    tar --keep-newer-files -xvf $(find .. -maxdepth 1 -type f -name mpc-*.tar.*) 2>/dev/null
+    tar -xf $(find .. -maxdepth 1 -type f -name mpc-*.tar.*)
     rm -rf mpc
     mv -v $(find . -maxdepth 1 -type d -name "mpc-*") mpc
 
@@ -28,7 +28,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     mkdir -v build
     cd build
-    ../configure                                       \
+    [ ! $DONT_CONFIG ] && ../configure                 \
         --target=$LFS_TGT                              \
         --prefix=$LFS/tools                            \
         --with-glibc-version=2.11                      \
@@ -48,7 +48,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         --disable-libvtv                               \
         --disable-libstdcxx                            \
         --enable-languages=c,c++
-    make -j $(getConf LFS_BUILD_PROC)
+    make -j 1
     make install -j 1
 
     # 完整的内部头文件
