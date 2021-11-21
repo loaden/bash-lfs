@@ -32,11 +32,12 @@ chown -v lfs $LFS/sources
 
 # 该设置为lfs用户所配置，后面的编译都要在lfs用户下进行
 export LFS_PROJECT=$(dirname `readlink -f $0`)
-export LFS_HOME=/mnt/lfs
+export LFS_HOME=/home/lfs
 echo LFS_PROJECT=$LFS_PROJECT
 echo LFS_HOME=$LFS_HOME
 rm -f $LFS_HOME/config.sh
 rm -f $LFS_HOME/.bash*
+sleep 0.5
 
 cat > $LFS_HOME/config.sh <<EOF
 #/bin/bash
