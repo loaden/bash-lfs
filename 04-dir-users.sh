@@ -32,10 +32,11 @@ chown -v lfs $LFS/sources
 
 # 该设置为lfs用户所配置，后面的编译都要在lfs用户下进行
 export LFS_PROJECT=$(dirname `readlink -f $0`)
-export LFS_HOME=$(su - lfs -c "env | grep HOME= | awk -F '=' '/HOME=/ {print $ 2}'")
+export LFS_HOME=/mnt/lfs
 echo LFS_PROJECT=$LFS_PROJECT
 echo LFS_HOME=$LFS_HOME
-[ -n "$LFS_HOME" && -d $LFS_HOME ] && rm -rf $LFS_HOME/.*
+rm -f $LFS_HOME/config.sh
+rm -f $LFS_HOME/.bash*
 
 cat > $LFS_HOME/config.sh <<EOF
 #/bin/bash
@@ -50,7 +51,7 @@ PATH=/usr/bin
 PATH=$LFS/tools/bin:$PATH
 CONFIG_SITE=$LFS/usr/share/config.site
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
-# cd $LFS_PROJECT
+cd $LFS_PROJECT
 END
 
 cat > ~/.bash_profile <<END
@@ -58,4 +59,7 @@ exec env -i HOME=$LFS_HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
 END
 EOF
 
-su - lfs -w LFS -w LFS_PROJECT -c "bash ~/config.sh"
+chown lfs:lfs $LFS_HOME/config.sh
+chmod u+x $LFS_HOME/config.sh
+
+su - lfs -w LFS -w LFS_PROJECT -c "~/config.sh"
