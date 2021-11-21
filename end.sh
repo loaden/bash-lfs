@@ -4,3 +4,4 @@
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
 umount -R $LFS
+[ ! -e /etc/bash.bashrc.bak ] || mv -v /etc/bash.bashrc.bak /etc/bash.bashrc

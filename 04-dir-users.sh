@@ -7,7 +7,7 @@ mkdir -pv $LFS/sources
 mkdir -pv $LFS/{etc,var} $LFS/usr/{bin,lib,sbin}
 
 for i in bin lib sbin; do
-    ln -sv usr/$i $LFS/$i
+    ln -sfv usr/$i $LFS/$i
 done
 
 case $(uname -m) in
@@ -28,23 +28,37 @@ chown -v lfs $LFS/sources
 # 一些商业发行版未做文档说明地将 /etc/bash.bashrc 引入 bash 初始化过程。
 # 该文件可能修改 lfs 用户的环境，并影响 LFS 关键软件包的构建。
 # TODO: 或者unset是更好的选择？
-# [ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.bak
+[ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.bak
 
-su - lfs
-cat > ~/.bash_profile << "EOF"
-exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
-EOF
+# 该设置为lfs用户所配置，后面的编译都要在lfs用户下进行
+export LFS_PROJECT=$(dirname `readlink -f $0`)
+export LFS_HOME=$(su - lfs -c "env | grep HOME= | awk -F '=' '/HOME=/ {print $ 2}'")
+echo LFS_PROJECT=$LFS_PROJECT
+echo LFS_HOME=$LFS_HOME
+[ -n "$LFS_HOME" ] && rm -rf $LFS_HOME/.*
 
-cat > ~/.bashrc << "EOF"
+cat > $LFS_HOME/config.sh <<EOF
+#/bin/bash
+
+cat > ~/.bashrc <<END
 set +h
 umask 0022
-LFS=/mnt/lfs
+LFS=$LFS
 LC_ALL=POSIX
 LFS_TGT=$(uname -m)-lfs-linux-gnu
 PATH=/usr/bin
 PATH=$LFS/tools/bin:$PATH
 CONFIG_SITE=$LFS/usr/share/config.site
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+cd $LFS_PROJECT
+END
+
+cat > ~/.bash_profile <<END
+exec env -i HOME=$LFS_HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
+END
 EOF
 
-exit # FIXME: 为什么切换不回root呢？
+chown lfs:lfs $LFS_HOME/config.sh
+chmod u+x $LFS_HOME/config.sh
+
+su - lfs -w LFS -w LFS_PROJECT -c "~/config.sh"
