@@ -49,7 +49,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         --disable-libvtv                               \
         --disable-libstdcxx                            \
         --enable-languages=c,c++
-    make -j 1
+    make -j 2
     make install -j 1
 
     # 完整的内部头文件
