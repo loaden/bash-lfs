@@ -4,20 +4,21 @@
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
 pushd $LFS/sources/$(getConf LFS_VERSION)
-    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name gcc-*.tar.*) 2>/dev/null
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "gcc-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name gcc-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "gcc-*")
 
-    tar -xf $(find .. -maxdepth 1 -type f -name mpfr-*.tar.*)
-    rm -rf mpfr
-    mv -v $(find . -maxdepth 1 -type d -name "mpfr-*") mpfr
+    [ ! $DONT_CONFIG ] && tar -xf $(find .. -maxdepth 1 -type f -name mpfr-*.tar.*)
+    [ ! $DONT_CONFIG ] && rm -rf mpfr
+    [ ! $DONT_CONFIG ] && mv -v $(find . -maxdepth 1 -type d -name "mpfr-*") mpfr
 
-    tar -xf $(find .. -maxdepth 1 -type f -name gmp-*.tar.*)
-    rm -rf gmp
-    mv -v $(find . -maxdepth 1 -type d -name "gmp-*") gmp
+    [ ! $DONT_CONFIG ] && tar -xf $(find .. -maxdepth 1 -type f -name gmp-*.tar.*)
+    [ ! $DONT_CONFIG ] && rm -rf gmp
+    [ ! $DONT_CONFIG ] && mv -v $(find . -maxdepth 1 -type d -name "gmp-*") gmp
 
-    tar -xf $(find .. -maxdepth 1 -type f -name mpc-*.tar.*)
-    rm -rf mpc
-    mv -v $(find . -maxdepth 1 -type d -name "mpc-*") mpc
+    [ ! $DONT_CONFIG ] && tar -xf $(find .. -maxdepth 1 -type f -name mpc-*.tar.*)
+    [ ! $DONT_CONFIG ] && rm -rf mpc
+    [ ! $DONT_CONFIG ] && mv -v $(find . -maxdepth 1 -type d -name "mpc-*") mpc
 
     case $(uname -m) in
         x86_64)
@@ -26,7 +27,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
             ;;
     esac
 
-    mkdir -v build
+    [ ! $DONT_CONFIG ] && mkdir -v build
     cd build
     [ ! $DONT_CONFIG ] && ../configure                 \
         --target=$LFS_TGT                              \
