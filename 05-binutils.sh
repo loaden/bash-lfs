@@ -6,6 +6,9 @@ source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 pushd $LFS/sources/$(getConf LFS_VERSION)
     tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name binutils-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "binutils-*")
+    [ -f PATCHED ] && patch -p1 -R < ../binutils-2.37-upstream_fix-1.patch
+    patch -p1 < ../binutils-2.37-upstream_fix-1.patch
+    touch PATCHED
     mkdir -v build
     cd build
     [ ! $DONT_CONFIG ] && ../configure  \
