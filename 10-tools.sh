@@ -10,14 +10,14 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     build_dir=$(find . -maxdepth 1 -type d -name "m4-*")/build
     mkdir -v $build_dir
     pushd $build_dir
-        ../configure --prefix=/usr   \
-            --host=$LFS_TGT         \
+        [ ! $DONT_CONFIG ] && ../configure  \
+            --prefix=/usr                   \
+            --host=$LFS_TGT                 \
             --build=$(../build-aux/config.guess)
         make -j $(getConf LFS_BUILD_PROC)
         make DESTDIR=$LFS install -j 1
-        [ $? ] && read -p "编译出错？任何键继续..." -n 1
+        read -p "M4编译结束，任何键继续..." -n 1
     popd
-
 
     # Ncurses
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "ncurses-*")
@@ -33,7 +33,8 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
         mkdir -v build
         pushd build
-            ../configure --prefix=/usr          \
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
                 --host=$LFS_TGT                 \
                 --build=$(../config.guess)      \
                 --mandir=/usr/share/man         \
@@ -45,8 +46,8 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 --enable-widec
             make -j $(getConf LFS_BUILD_PROC)
             make DESTDIR=$LFS TIC_PATH=$(pwd)/../build_tic/progs/tic install
-            [ $? ] && read -p "编译出错？任何键继续..." -n 1
             echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
+            read -p "Ncurses编译结束，任何键继续..." -n 1
         popd
     popd
 popd

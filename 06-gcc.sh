@@ -27,7 +27,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
             ;;
     esac
 
-    [ ! $DONT_CONFIG ] && mkdir -v build
+    mkdir -v build
     cd build
     [ ! $DONT_CONFIG ] && ../configure                 \
         --target=$LFS_TGT                              \
