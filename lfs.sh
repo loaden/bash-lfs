@@ -9,9 +9,11 @@ fi
 
 export LFS=/mnt/lfs
 echo LFS=$LFS
+export LFS_CONF=$(dirname `readlink -f $0`)/lfs.conf
+echo LFS_CONF=$LFS_CONF
 
 function getConf() {
-    str=$(cat `dirname ${BASH_SOURCE[0]}`/lfs.conf | grep $1)
+    str=$(cat $LFS_CONF | grep $1)
     ret=${str#*=}
     echo $ret
 }
