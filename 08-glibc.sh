@@ -38,6 +38,8 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     echo 'int main(){}' > dummy.c
     $LFS_TGT-gcc dummy.c
     readelf -l a.out | grep '/ld-linux'
-    [ ! $? ] && echo OK && $LFS/tools/libexec/gcc/$LFS_TGT/$(getConf LFS_GCC_VERSION)/install-tools/mkheaders
+    $LFS/tools/libexec/gcc/$LFS_TGT/$(getConf LFS_GCC_VERSION)/install-tools/mkheaders
     rm -v dummy.c a.out
+    cat `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h > ~/glibc_limits.h
+    diff ~/gcc_limits.h ~/glibc_limits.h
 popd
