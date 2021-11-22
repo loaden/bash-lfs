@@ -16,7 +16,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
             --build=$(../build-aux/config.guess)
         make -j $(getConf LFS_BUILD_PROC)
         make DESTDIR=$LFS install -j 1
-        read -p "M4编译结束，任何键继续..." -n 1
+        read -p "M4 编译结束，任意键继续..." -n 1
     popd
 
     # Ncurses
@@ -47,7 +47,24 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
             make -j $(getConf LFS_BUILD_PROC)
             make DESTDIR=$LFS TIC_PATH=$(pwd)/../build_tic/progs/tic install
             echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
-            read -p "Ncurses编译结束，任何键继续..." -n 1
+            read -p "Ncurses 编译结束，任意键继续..." -n 1
         popd
+    popd
+
+    # Bash
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "bash-*")
+    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name bash-*.tar.*) 2>/dev/null
+    build_dir=$(find . -maxdepth 1 -type d -name "bash-*")/build
+    mkdir -v $build_dir
+    pushd $build_dir
+        [  $DONT_CONFIG ] && ../configure      \
+            --prefix=/usr                       \
+            --build=$(../support/config.guess)  \
+            --host=$LFS_TGT                     \
+            --without-bash-malloc
+        make -j $(getConf LFS_BUILD_PROC)
+        make DESTDIR=$LFS install -j 1
+        ln -sv bash $LFS/bin/sh
+        read -p "Bash 编译结束，任意键继续..." -n 1
     popd
 popd
