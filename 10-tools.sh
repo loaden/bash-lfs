@@ -67,4 +67,27 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         ln -sfv bash $LFS/bin/sh
         read -p "Bash 编译结束，任意键继续..." -n 1
     popd
+
+    # CoreUtils
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "coreutils-*")
+    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name coreutils-*.tar.*) 2>/dev/null
+    cd $(find . -maxdepth 1 -type d -name "coreutils-*")
+    [ -f PATCHED ] && patch -p1 -R < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
+    patch -p1 < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
+    touch PATCHED
+    sleep 5
+    mkdir -v build
+    cd build
+    [ ! $DONT_CONFIG ] && ../configure          \
+        --prefix=/usr                           \
+        --host=$LFS_TGT                         \
+        --build=$(../build-aux/config.guess)    \
+        --enable-install-program=hostname       \
+        --enable-no-install-program=kill,uptime
+    make -j $LFS_BUILD_PROC
+    make DESTDIR=$LFS install -j 1
+    mv -v $LFS/usr/bin/chroot $LFS/usr/sbin
+    mkdir -pv $LFS/usr/share/man/man8
+    mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
+    sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
 popd
