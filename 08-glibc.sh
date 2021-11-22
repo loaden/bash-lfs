@@ -33,4 +33,11 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         libc_cv_slibdir=/usr/lib
     make -j 1
     make DESTDIR=$LFS install
+
+    sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
+    echo 'int main(){}' > dummy.c
+    $LFS_TGT-gcc dummy.c
+    readelf -l a.out | grep '/ld-linux'
+    [ ! $? ] && echo OK && $LFS/tools/libexec/gcc/$LFS_TGT/11.2.0/install-tools/mkheaders
+    rm -v dummy.c a.out
 popd
