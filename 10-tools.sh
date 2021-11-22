@@ -57,14 +57,14 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     build_dir=$(find . -maxdepth 1 -type d -name "bash-*")/build
     mkdir -v $build_dir
     pushd $build_dir
-        [  $DONT_CONFIG ] && ../configure      \
+        [ ! $DONT_CONFIG ] && ../configure      \
             --prefix=/usr                       \
             --build=$(../support/config.guess)  \
             --host=$LFS_TGT                     \
             --without-bash-malloc
         make -j $(getConf LFS_BUILD_PROC)
         make DESTDIR=$LFS install -j 1
-        ln -sv bash $LFS/bin/sh
+        ln -sfv bash $LFS/bin/sh
         read -p "Bash 编译结束，任意键继续..." -n 1
     popd
 popd
