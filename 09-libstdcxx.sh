@@ -5,6 +5,7 @@ source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
 pushd $LFS/sources/$(getConf LFS_VERSION)
     cd $(find . -maxdepth 1 -type d -name "gcc-*")
+    [ "$CLEAN" ] && rm -rf build_cxx
     mkdir -v build_cxx
     cd build_cxx
     ../libstdc++-v3/configure           \
@@ -15,6 +16,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         --disable-nls                   \
         --disable-libstdcxx-pch         \
         --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/$(getConf LFS_GCC_VERSION)
-    make -j $(getConf LFS_BUILD_PROC)
+    make -j $LFS_BUILD_PROC
     make DESTDIR=$LFS install -j 1
 popd

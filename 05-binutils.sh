@@ -18,6 +18,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         --target=$LFS_TGT               \
         --disable-nls                   \
         --disable-werror
-    make -j $(getConf LFS_BUILD_PROC)
+    make -j $LFS_BUILD_PROC
     make install -j 1
 popd

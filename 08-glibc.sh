@@ -31,7 +31,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         --enable-kernel=3.2                 \
         --with-headers=$LFS/usr/include     \
         libc_cv_slibdir=/usr/lib
-    make -j 2
+    make -j $LFS_BUILD_PROC
     make DESTDIR=$LFS install
 
     sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd

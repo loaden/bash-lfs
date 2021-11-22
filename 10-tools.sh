@@ -14,7 +14,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
             --prefix=/usr                   \
             --host=$LFS_TGT                 \
             --build=$(../build-aux/config.guess)
-        make -j $(getConf LFS_BUILD_PROC)
+        make -j $LFS_BUILD_PROC
         make DESTDIR=$LFS install -j 1
         read -p "M4 编译结束，任意键继续..." -n 1
     popd
@@ -44,7 +44,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 --without-ada                   \
                 --without-normal                \
                 --enable-widec
-            make -j $(getConf LFS_BUILD_PROC)
+            make -j $LFS_BUILD_PROC
             make DESTDIR=$LFS TIC_PATH=$(pwd)/../build_tic/progs/tic install
             echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
             read -p "Ncurses 编译结束，任意键继续..." -n 1
@@ -62,7 +62,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
             --build=$(../support/config.guess)  \
             --host=$LFS_TGT                     \
             --without-bash-malloc
-        make -j $(getConf LFS_BUILD_PROC)
+        make -j $LFS_BUILD_PROC
         make DESTDIR=$LFS install -j 1
         ln -sfv bash $LFS/bin/sh
         read -p "Bash 编译结束，任意键继续..." -n 1

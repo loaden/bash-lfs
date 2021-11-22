@@ -11,6 +11,8 @@ export LFS=/mnt/lfs
 echo LFS=$LFS
 export LFS_CONF=$(dirname `readlink -f $0`)/lfs.conf
 echo LFS_CONF=$LFS_CONF
+export LFS_BUILD_PROC=$(echo $(nproc) - 1 | bc)
+echo LFS_BUILD_PROC=$LFS_BUILD_PROC
 
 function getConf() {
     str=$(cat $LFS_CONF | grep $1)
