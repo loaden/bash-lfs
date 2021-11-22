@@ -5,11 +5,11 @@ source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
 pushd $LFS/sources/$(getConf LFS_VERSION)
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "glibc-*")
-    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name glibc-*.tar.*) 2>/dev/null
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name glibc-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "glibc-*")
-    [ -f PATCHED ] && patch -p1 -R < $(find .. -maxdepth 1 -type f -name glibc-*.patch)
-    patch -p1 < $(find .. -maxdepth 1 -type f -name glibc-*.patch)
-    touch PATCHED
+    [ ! $DONT_CONFIG ] && [ -f PATCHED ] && patch -p1 -R < $(find .. -maxdepth 1 -type f -name glibc-*.patch)
+    [ ! $DONT_CONFIG ] && patch -p1 < $(find .. -maxdepth 1 -type f -name glibc-*.patch)
+    [ ! $DONT_CONFIG ] && touch PATCHED
 
     mkdir -v build
     cd build
@@ -24,14 +24,14 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     echo "rootsbindir=/usr/sbin" > configparms
 
-    ../configure                            \
+    [ ! $DONT_CONFIG ] && ../configure      \
         --prefix=/usr                       \
         --host=$LFS_TGT                     \
         --build=$(../scripts/config.guess)  \
         --enable-kernel=3.2                 \
         --with-headers=$LFS/usr/include     \
         libc_cv_slibdir=/usr/lib
-    make -j 1
+    make -j 2
     make DESTDIR=$LFS install
 
     sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
