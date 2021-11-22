@@ -15,6 +15,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         --disable-multilib              \
         --disable-nls                   \
         --disable-libstdcxx-pch         \
+        --enable-cxx-flags=-nostdinc++  \
         --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/$(getConf LFS_GCC_VERSION)
     make -j $LFS_BUILD_PROC
     make DESTDIR=$LFS install -j 1
