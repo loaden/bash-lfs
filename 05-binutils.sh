@@ -10,6 +10,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     [ ! $DONT_CONFIG ] && [ -f PATCHED ] && patch -p1 -R < $(find .. -maxdepth 1 -type f -name binutils-*.patch)
     [ ! $DONT_CONFIG ] && patch -p1 < $(find .. -maxdepth 1 -type f -name binutils-*.patch)
     [ ! $DONT_CONFIG ] && touch PATCHED
+    [ ! $DONT_CONFIG ] && sleep 3
     mkdir -v build
     cd build
     [ ! $DONT_CONFIG ] && ../configure  \
