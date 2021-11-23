@@ -78,104 +78,144 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     echo Coreutils... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "coreutils-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name coreutils-*.tar.*) 2>/dev/null
-    cd $(find . -maxdepth 1 -type d -name "coreutils-*")
-    [ ! $DONT_CONFIG ] && [ -f PATCHED ] && patch -p1 -R < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
-    [ ! $DONT_CONFIG ] && patch -p1 < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
-    [ ! $DONT_CONFIG ] && touch PATCHED
-    [ ! $DONT_CONFIG ] && sleep 3
+    pushd $(find . -maxdepth 1 -type d -name "coreutils-*")
+        [ ! $DONT_CONFIG ] && [ -f PATCHED ] && patch -p1 -R < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
+        [ ! $DONT_CONFIG ] && patch -p1 < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
+        [ ! $DONT_CONFIG ] && touch PATCHED
+        [ ! $DONT_CONFIG ] && sleep 3
 
-    mkdir -v build
-    cd build
-    [ ! $DONT_CONFIG ] && ../configure          \
-        --prefix=/usr                           \
-        --host=$LFS_TGT                         \
-        --build=$(../build-aux/config.guess)    \
-        --enable-install-program=hostname       \
-        --enable-no-install-program=kill,uptime
-    make -j $LFS_BUILD_PROC
-    make DESTDIR=$LFS install -j 1
-    mv -v $LFS/usr/bin/chroot $LFS/usr/sbin
-    mkdir -pv $LFS/usr/share/man/man8
-    mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
-    sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure          \
+                --prefix=/usr                           \
+                --host=$LFS_TGT                         \
+                --build=$(../build-aux/config.guess)    \
+                --enable-install-program=hostname       \
+                --enable-no-install-program=kill,uptime
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+            mv -v $LFS/usr/bin/chroot $LFS/usr/sbin
+            mkdir -pv $LFS/usr/share/man/man8
+            mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
+            sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
+        popd
+    popd
     read -p "Coreutils 编译结束，任意键继续..." -n 1
 
     # Diffutils
     echo Diffutils... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "diffutils-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name diffutils-*.tar.*) 2>/dev/null
-    cd $(find . -maxdepth 1 -type d -name "diffutils-*")
-
-    mkdir -v build
-    cd build
-    [ ! $DONT_CONFIG ] && ../configure  \
-        --prefix=/usr                   \
-        --host=$LFS_TGT
-    make -j $LFS_BUILD_PROC
-    make DESTDIR=$LFS install -j 1
+    pushd $(find . -maxdepth 1 -type d -name "diffutils-*")
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --host=$LFS_TGT
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
     read -p "Diffutils 编译结束，任意键继续..." -n 1
 
     # File
     echo File... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "file-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name file-*.tar.*) 2>/dev/null
-    cd $(find . -maxdepth 1 -type d -name "file-*")
-    mkdir -v host_build
-    pushd host_build
-        [ ! $DONT_CONFIG ] && ../configure  \
-            --disable-bzlib                 \
-            --disable-libseccomp            \
-            --disable-xzlib                 \
-            --disable-zlib
-        make -j $LFS_BUILD_PROC
+    pushd $(find . -maxdepth 1 -type d -name "file-*")
+        mkdir -v host_build
+        pushd host_build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --disable-bzlib                 \
+                --disable-libseccomp            \
+                --disable-xzlib                 \
+                --disable-zlib
+            make -j $LFS_BUILD_PROC
+        popd
+        [ ! $DONT_CONFIG ] && sleep 3
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --host=$LFS_TGT                 \
+                --build=$(./config.guess)
+            make FILE_COMPILE=$(pwd)/../host_build/src/file
+            make DESTDIR=$LFS install -j 1
+        popd
     popd
-    [ ! $DONT_CONFIG ] && sleep 3
-    mkdir -v build
-    cd build
-    [ ! $DONT_CONFIG ] && ../configure  \
-        --prefix=/usr                   \
-        --host=$LFS_TGT                 \
-        --build=$(./config.guess)
-    make FILE_COMPILE=$(pwd)/../host_build/src/file
-    make DESTDIR=$LFS install -j 1
     read -p "File 编译结束，任意键继续..." -n 1
 
     # Findutils
     echo Findutils... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "findutils-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name findutils-*.tar.*) 2>/dev/null
-    cd $(find . -maxdepth 1 -type d -name "findutils-*")
-
-    mkdir -v build
-    cd build
-    [ ! $DONT_CONFIG ] && ../configure  \
-        --prefix=/usr                   \
-        --localstatedir=/var/lib/locate \
-        --host=$LFS_TGT                 \
-        --build=$(../build-aux/config.guess)
-    make -j $LFS_BUILD_PROC
-    make DESTDIR=$LFS install -j 1
+    pushd $(find . -maxdepth 1 -type d -name "findutils-*")
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --localstatedir=/var/lib/locate \
+                --host=$LFS_TGT                 \
+                --build=$(../build-aux/config.guess)
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
     read -p "Findutils 编译结束，任意键继续..." -n 1
-
-    else
 
     # Gawk
     echo Gawk... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "gawk-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name gawk-*.tar.*) 2>/dev/null
-    cd $(find . -maxdepth 1 -type d -name "gawk-*")
-    sed -i 's/extras//' Makefile.in
-
-    mkdir -v build
-    cd build
-
-    [ ! $DONT_CONFIG ] && ../configure  \
-        --prefix=/usr                   \
-        --host=$LFS_TGT                 \
-        --build=$(../config.guess)
-    make -j $LFS_BUILD_PROC
-    make DESTDIR=$LFS install -j 1
+    pushd $(find . -maxdepth 1 -type d -name "gawk-*")
+        sed -i 's/extras//' Makefile.in
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --host=$LFS_TGT                 \
+                --build=$(../config.guess)
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
     read -p "Gawk 编译结束，任意键继续..." -n 1
+
+    else
+
+    # Grep
+    echo Grep... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "grep-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name grep-*.tar.*) 2>/dev/null
+    pushd $(find . -maxdepth 1 -type d -name "grep-*")
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --host=$LFS_TGT                 \
+                --build=$(../config.guess)
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
+    read -p "Grep 编译结束，任意键继续..." -n 1
+
+    # Gzip
+    echo Gzip... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "gzip-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name gzip-*.tar.*) 2>/dev/null
+    pushd $(find . -maxdepth 1 -type d -name "gzip-*")
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --host=$LFS_TGT                 \
+                --build=$(../config.guess)
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
+    read -p "Gzip 编译结束，任意键继续..." -n 1
 
     fi
 popd
