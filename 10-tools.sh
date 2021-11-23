@@ -8,6 +8,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     if false; then
 
     # M4
+    echo M4... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "m4-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name m4-*.tar.*) 2>/dev/null
     build_dir=$(find . -maxdepth 1 -type d -name "m4-*")/build
@@ -23,6 +24,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     popd
 
     # Ncurses
+    echo Ncurses... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "ncurses-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name ncurses-*.tar.*) 2>/dev/null
     pushd $(find . -maxdepth 1 -type d -name "ncurses-*")
@@ -55,6 +57,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     popd
 
     # Bash
+    echo Bash... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "bash-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name bash-*.tar.*) 2>/dev/null
     build_dir=$(find . -maxdepth 1 -type d -name "bash-*")/build
@@ -72,6 +75,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     popd
 
     # Coreutils
+    echo Coreutils... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "coreutils-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name coreutils-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "coreutils-*")
@@ -97,6 +101,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     read -p "Coreutils 编译结束，任意键继续..." -n 1
 
     # Diffutils
+    echo Diffutils... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "diffutils-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name diffutils-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "diffutils-*")
@@ -110,9 +115,8 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     make DESTDIR=$LFS install -j 1
     read -p "Diffutils 编译结束，任意键继续..." -n 1
 
-    else
-
     # File
+    echo File... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "file-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name file-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "file-*")
@@ -135,6 +139,25 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     make FILE_COMPILE=$(pwd)/../host_build/src/file
     make DESTDIR=$LFS install -j 1
     read -p "File 编译结束，任意键继续..." -n 1
+
+    else
+
+    # Findutils
+    echo Findutils... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "findutils-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name findutils-*.tar.*) 2>/dev/null
+    cd $(find . -maxdepth 1 -type d -name "findutils-*")
+
+    mkdir -v build
+    cd build
+    [ ! $DONT_CONFIG ] && ../configure  \
+        --prefix=/usr                   \
+        --localstatedir=/var/lib/locate \
+        --host=$LFS_TGT                 \
+        --build=$(../build-aux/config.guess)
+    make -j $LFS_BUILD_PROC
+    make DESTDIR=$LFS install -j 1
+    read -p "Findutils 编译结束，任意键继续..." -n 1
 
     fi
 popd
