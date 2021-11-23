@@ -181,8 +181,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     popd
     read -p "Gawk 编译结束，任意键继续..." -n 1
 
-    else
-
     # Grep
     echo Grep... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "grep-*")
@@ -216,6 +214,122 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         popd
     popd
     read -p "Gzip 编译结束，任意键继续..." -n 1
+
+    # Make
+    echo Make... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "make-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name make-*.tar.*) 2>/dev/null
+    pushd $(find . -maxdepth 1 -type d -name "make-*")
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --without-guile                 \
+                --host=$LFS_TGT                 \
+                --build=$(../build-aux/config.guess)
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
+    read -p "Make 编译结束，任意键继续..." -n 1
+
+    # Patch
+    echo Patch... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "patch-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name patch-*.tar.*) 2>/dev/null
+    pushd $(find . -maxdepth 1 -type d -name "patch-*")
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --host=$LFS_TGT                 \
+                --build=$(../build-aux/config.guess)
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
+    read -p "Patch 编译结束，任意键继续..." -n 1
+
+    # Sed
+    echo Sed... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "sed-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name sed-*.tar.*) 2>/dev/null
+    pushd $(find . -maxdepth 1 -type d -name "sed-*")
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --host=$LFS_TGT                 \
+                --build=$(../build-aux/config.guess)
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
+    read -p "Sed 编译结束，任意键继续..." -n 1
+
+    # Tar
+    echo Tar... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "tar-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name tar-*.tar.*) 2>/dev/null
+    pushd $(find . -maxdepth 1 -type d -name "sed-*")
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --host=$LFS_TGT                 \
+                --build=$(../build-aux/config.guess)
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
+    read -p "Tar 编译结束，任意键继续..." -n 1
+
+    # Xz
+    echo Xz... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "xz-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name xz-*.tar.*) 2>/dev/null
+    pushd $(find . -maxdepth 1 -type d -name "xz-*")
+        mkdir -v build
+        pushd build
+            [ ! $DONT_CONFIG ] && ../configure      \
+                --prefix=/usr                       \
+                --host=$LFS_TGT                     \
+                --build=$(../build-aux/config.guess)\
+                --disable-static                    \
+                --docdir=/usr/share/doc/xz-5.2.5
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+        popd
+    popd
+    read -p "Xz 编译结束，任意键继续..." -n 1
+
+    else
+
+    # Binutils 2
+    echo Binutils 2... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "binutils-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name binutils-*.tar.*) 2>/dev/null
+    pushd $(find . -maxdepth 1 -type d -name "binutils-*")
+        [ ! $DONT_CONFIG ] && [ -f PATCHED ] && patch -p1 -R < $(find .. -maxdepth 1 -type f -name binutils-*.patch)
+        [ ! $DONT_CONFIG ] && patch -p1 < $(find .. -maxdepth 1 -type f -name binutils-*.patch)
+        [ ! $DONT_CONFIG ] && touch PATCHED
+        [ ! $DONT_CONFIG ] && sleep 3
+        mkdir -v build2
+        pushd build2
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --prefix=/usr                   \
+                --build=$(../config.guess)      \
+                --host=$LFS_TGT                 \
+                --disable-nls                   \
+                --enable-shared                 \
+                --disable-werror                \
+                --enable-64-bit-bfd
+            make -j $LFS_BUILD_PROC
+            make DESTDIR=$LFS install -j 1
+            install -vm755 libctf/.libs/libctf.so.0.0.0 $LFS/usr/lib
+        popd
+    popd
+    read -p "Binutils 2 编译结束，任意键继续..." -n 1
 
     fi
 popd
