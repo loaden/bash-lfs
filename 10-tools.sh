@@ -303,8 +303,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     popd
     read -p "Xz 编译结束，任意键继续..." -n 1
 
-    else
-
     # Binutils 2
     echo Binutils 2... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "binutils-*")
@@ -330,6 +328,59 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         popd
     popd
     read -p "Binutils 2 编译结束，任意键继续..." -n 1
+
+    # GCC 2
+    echo GCC 2... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "gcc-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name gcc-*.tar.*) 2>/dev/null
+    pushd $(find . -maxdepth 1 -type d -name "gcc-*")
+        [ ! $DONT_CONFIG ] && tar -xf $(find .. -maxdepth 1 -type f -name mpfr-*.tar.*)
+        [ ! $DONT_CONFIG ] && rm -rf mpfr
+        [ ! $DONT_CONFIG ] && mv -v $(find . -maxdepth 1 -type d -name "mpfr-*") mpfr
+
+        [ ! $DONT_CONFIG ] && tar -xf $(find .. -maxdepth 1 -type f -name gmp-*.tar.*)
+        [ ! $DONT_CONFIG ] && rm -rf gmp
+        [ ! $DONT_CONFIG ] && mv -v $(find . -maxdepth 1 -type d -name "gmp-*") gmp
+
+        [ ! $DONT_CONFIG ] && tar -xf $(find .. -maxdepth 1 -type f -name mpc-*.tar.*)
+        [ ! $DONT_CONFIG ] && rm -rf mpc
+        [ ! $DONT_CONFIG ] && mv -v $(find . -maxdepth 1 -type d -name "mpc-*") mpc
+
+        case $(uname -m) in
+            x86_64)
+                sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+            ;;
+        esac
+
+        mkdir -v build2
+        pushd build2
+            mkdir -pv $LFS_TGT/libgcc
+            ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
+            [ ! $DONT_CONFIG ] && ../configure  \
+                --build=$(../config.guess)      \
+                --host=$LFS_TGT                 \
+                --prefix=/usr                   \
+                CC_FOR_TARGET=$LFS_TGT-gcc      \
+                --with-build-sysroot=$LFS       \
+                --enable-initfini-array         \
+                --disable-nls                   \
+                --disable-multilib              \
+                --disable-decimal-float         \
+                --disable-libatomic             \
+                --disable-libgomp               \
+                --disable-libquadmath           \
+                --disable-libssp                \
+                --disable-libvtv                \
+                --disable-libstdcxx             \
+                --enable-languages=c,c++
+            make -j 2
+            make DESTDIR=$LFS install -j 1
+            ln -sv gcc $LFS/usr/bin/cc
+        popd
+    popd
+    read -p "GCC 2 编译结束，任意键继续..." -n 1
+
+    else
 
     fi
 popd
