@@ -96,8 +96,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
     read -p "Coreutils 编译结束，任意键继续..." -n 1
 
-    else
-
     # Diffutils
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "diffutils-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name diffutils-*.tar.*) 2>/dev/null
@@ -111,6 +109,32 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     make -j $LFS_BUILD_PROC
     make DESTDIR=$LFS install -j 1
     read -p "Diffutils 编译结束，任意键继续..." -n 1
+
+    else
+
+    # File
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "file-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name file-*.tar.*) 2>/dev/null
+    cd $(find . -maxdepth 1 -type d -name "file-*")
+    mkdir -v host_build
+    pushd host_build
+        [ ! $DONT_CONFIG ] && ../configure  \
+            --disable-bzlib                 \
+            --disable-libseccomp            \
+            --disable-xzlib                 \
+            --disable-zlib
+        make -j $LFS_BUILD_PROC
+    popd
+    [ ! $DONT_CONFIG ] && sleep 3
+    mkdir -v build
+    cd build
+    [ ! $DONT_CONFIG ] && ../configure  \
+        --prefix=/usr                   \
+        --host=$LFS_TGT                 \
+        --build=$(./config.guess)
+    make FILE_COMPILE=$(pwd)/../host_build/src/file
+    make DESTDIR=$LFS install -j 1
+    read -p "File 编译结束，任意键继续..." -n 1
 
     fi
 popd
