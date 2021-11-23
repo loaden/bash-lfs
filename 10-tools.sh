@@ -140,8 +140,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     make DESTDIR=$LFS install -j 1
     read -p "File 编译结束，任意键继续..." -n 1
 
-    else
-
     # Findutils
     echo Findutils... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "findutils-*")
@@ -158,6 +156,26 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     make -j $LFS_BUILD_PROC
     make DESTDIR=$LFS install -j 1
     read -p "Findutils 编译结束，任意键继续..." -n 1
+
+    else
+
+    # Gawk
+    echo Gawk... && sleep 2
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "gawk-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name gawk-*.tar.*) 2>/dev/null
+    cd $(find . -maxdepth 1 -type d -name "gawk-*")
+    sed -i 's/extras//' Makefile.in
+
+    mkdir -v build
+    cd build
+
+    [ ! $DONT_CONFIG ] && ../configure  \
+        --prefix=/usr                   \
+        --host=$LFS_TGT                 \
+        --build=$(../config.guess)
+    make -j $LFS_BUILD_PROC
+    make DESTDIR=$LFS install -j 1
+    read -p "Gawk 编译结束，任意键继续..." -n 1
 
     fi
 popd
