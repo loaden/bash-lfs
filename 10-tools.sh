@@ -71,9 +71,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         read -p "Bash 编译结束，任意键继续..." -n 1
     popd
 
-    else
-
-    # CoreUtils
+    # Coreutils
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "coreutils-*")
     [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name coreutils-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "coreutils-*")
@@ -96,6 +94,23 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     mkdir -pv $LFS/usr/share/man/man8
     mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
     sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
+    read -p "Coreutils 编译结束，任意键继续..." -n 1
+
+    else
+
+    # Diffutils
+    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "diffutils-*")
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name diffutils-*.tar.*) 2>/dev/null
+    cd $(find . -maxdepth 1 -type d -name "diffutils-*")
+
+    mkdir -v build
+    cd build
+    [ ! $DONT_CONFIG ] && ../configure  \
+        --prefix=/usr                   \
+        --host=$LFS_TGT
+    make -j $LFS_BUILD_PROC
+    make DESTDIR=$LFS install -j 1
+    read -p "Diffutils 编译结束，任意键继续..." -n 1
 
     fi
 popd
