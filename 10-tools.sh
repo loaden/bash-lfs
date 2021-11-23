@@ -4,9 +4,12 @@
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
 pushd $LFS/sources/$(getConf LFS_VERSION)
+
+    if false; then
+
     # M4
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "m4-*")
-    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name m4-*.tar.*) 2>/dev/null
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name m4-*.tar.*) 2>/dev/null
     build_dir=$(find . -maxdepth 1 -type d -name "m4-*")/build
     mkdir -v $build_dir
     pushd $build_dir
@@ -21,7 +24,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     # Ncurses
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "ncurses-*")
-    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name ncurses-*.tar.*) 2>/dev/null
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name ncurses-*.tar.*) 2>/dev/null
     pushd $(find . -maxdepth 1 -type d -name "ncurses-*")
         sed -i s/mawk// configure
         mkdir -v build_tic
@@ -53,7 +56,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     # Bash
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "bash-*")
-    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name bash-*.tar.*) 2>/dev/null
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name bash-*.tar.*) 2>/dev/null
     build_dir=$(find . -maxdepth 1 -type d -name "bash-*")/build
     mkdir -v $build_dir
     pushd $build_dir
@@ -68,14 +71,16 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         read -p "Bash 编译结束，任意键继续..." -n 1
     popd
 
+    else
+
     # CoreUtils
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "coreutils-*")
-    tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name coreutils-*.tar.*) 2>/dev/null
+    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name coreutils-*.tar.*) 2>/dev/null
     cd $(find . -maxdepth 1 -type d -name "coreutils-*")
-    [ -f PATCHED ] && patch -p1 -R < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
-    patch -p1 < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
-    touch PATCHED
-    sleep 5
+    [ ! $DONT_CONFIG ] && [ -f PATCHED ] && patch -p1 -R < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
+    [ ! $DONT_CONFIG ] && patch -p1 < $(find .. -maxdepth 1 -type f -name coreutils-*.patch)
+    [ ! $DONT_CONFIG ] && touch PATCHED
+    sleep 10
     mkdir -v build
     cd build
     [ ! $DONT_CONFIG ] && ../configure          \
@@ -90,4 +95,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     mkdir -pv $LFS/usr/share/man/man8
     mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
     sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
+
+    fi
 popd
