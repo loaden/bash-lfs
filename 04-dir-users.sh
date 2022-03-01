@@ -19,18 +19,17 @@ esac
 mkdir -pv $LFS/tools
 
 # 建立LFS专用用户，避免环境污染
-export LFS_USER=lfs
 id $LFS_USER >/dev/null 2>&1
 if [ $? != 0 ]; then
     groupadd $LFS_USER
     useradd -s /bin/bash -g $LFS_USER -m -k /dev/null $LFS_USER
     echo $LFS_USER:$LFS_USER | /sbin/chpasswd
-    chown -v $LFS_USER $LFS/{usr{,/*},lib,var,etc,bin,sbin,tools}
+    chown -v $LFS_USER:root $LFS/{.,usr{,/*},lib,var,etc,bin,sbin,tools}
     case $(uname -m) in
-        x86_64) chown -v $LFS_USER $LFS/lib64 ;;
+        x86_64) chown -v $LFS_USER:root $LFS/lib64 ;;
     esac
 
-    chown -v $LFS_USER $LFS/sources
+    chown -v -R $LFS_USER:root $LFS/sources
 fi
 
 # 一些商业发行版未做文档说明地将 /etc/bash.bashrc 引入 bash 初始化过程。
@@ -39,10 +38,7 @@ if [ -e /etc/bash.bashrc ]; then
     mv -v /etc/bash.bashrc /etc/bash.bashrc.bak
 fi
 
-# 该设置为$LFS_USER用户所配置，后面的编译都要在$LFS_USER用户下进行
-export LFS_HOME=/home/$LFS_USER
-echo LFS_HOME=$LFS_HOME
-
+# 创建bash初始化配置
 cat > $LFS_HOME/.bashrc <<EOF
 set +h
 umask 0022
@@ -56,6 +52,10 @@ CONFIG_SITE=$LFS/usr/share/config.site
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
 cd $LFS_PROJECT
 env | grep -v LS_COLORS
+if [ -f $LFS_HOME/build.sh ]; then
+    bash -c "sleep 0.5 && exec $LFS_HOME/build.sh && exit"
+    exit
+fi
 EOF
 
 cat > ~/.bash_profile <<EOF
@@ -63,4 +63,4 @@ exec env -i USER=$LFS_USER HOME=$LFS_HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
 EOF
 
 chown $LFS_USER:$LFS_USER $LFS_HOME/.bash*
-su - $LFS_USER
+# su - $LFS_USER

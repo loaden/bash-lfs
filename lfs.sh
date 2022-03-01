@@ -7,17 +7,31 @@ if [[ $EUID != 0 && $USER != lfs ]]; then
     exit 1
 fi
 
+# LFS系统分区挂载路径
 export LFS=/mnt/lfs
 echo LFS=$LFS
-LFS_PROJECT=$(dirname `readlink -f $0`)
+
+# 本项目路径
+LFS_PROJECT=$(dirname `readlink -f ${BASH_SOURCE[0]}`)
 if [ ! -f $LFS_PROJECT/lfs.conf ]; then
     LFS_PROJECT=$(dirname `readlink -f $LFS_PROJECT/../`)
 fi
 export LFS_PROJECT
+echo LFS_PROJECT=$LFS_PROJECT
+
+# LFS配置文件路径
 export LFS_CONF=$LFS_PROJECT/lfs.conf
 echo LFS_CONF=$LFS_CONF
+
+# 并行编译核数
 export LFS_BUILD_PROC=$(echo $(nproc) - 1 | bc)
 echo LFS_BUILD_PROC=$LFS_BUILD_PROC
+
+# 所有的编译工作都要在$LFS_USER用户下进行
+export LFS_USER=lfs
+echo LFS_USER=$LFS_USER
+export LFS_HOME=/home/$LFS_USER
+echo LFS_HOME=$LFS_HOME
 
 function getConf() {
     str=$(cat $LFS_CONF | grep $1)
