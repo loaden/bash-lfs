@@ -11,7 +11,9 @@ source `dirname ${BASH_SOURCE[0]}`/../02-mount.sh
 echo DONE
 echo
 
+echo KILL 03-download-srcs.sh ...
+source `dirname ${BASH_SOURCE[0]}`/../03-download-srcs.sh
+echo DONE
+echo
 
-# source `dirname ${BASH_SOURCE[0]}`/../03-download-srcs.sh
 # source `dirname ${BASH_SOURCE[0]}`/../04-dir-users.sh
-exit
