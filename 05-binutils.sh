@@ -13,14 +13,13 @@ EOF
     chown $LFS_USER:$LFS_USER $LFS_HOME/build.sh
     chmod 0755 $LFS_HOME/build.sh
     su - $LFS_USER
-    exit
+    return
 fi
 
 # 来自lfs用户的调用
 pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=binutils
     PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
-    echo PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name $PKG_NAME-*.tar.*)
         PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
