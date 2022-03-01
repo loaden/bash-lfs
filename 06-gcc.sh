@@ -26,9 +26,9 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         pushd $PKG_PATH
             tar -xpvf $(find .. -maxdepth 1 -type f -name mpfr-*.tar.*)
             mv -v $(find . -maxdepth 1 -type d -name "mpfr-*") mpfr
-            tar -xf $(find .. -maxdepth 1 -type f -name gmp-*.tar.*)
+            tar -xpvf $(find .. -maxdepth 1 -type f -name gmp-*.tar.*)
             mv -v $(find . -maxdepth 1 -type d -name "gmp-*") gmp
-            tar -xf $(find .. -maxdepth 1 -type f -name mpc-*.tar.*)
+            tar -xpvf $(find .. -maxdepth 1 -type f -name mpc-*.tar.*)
             mv -v $(find . -maxdepth 1 -type d -name "mpc-*") mpc
             case $(uname -m) in
                 x86_64)
