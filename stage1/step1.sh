@@ -16,4 +16,7 @@ source `dirname ${BASH_SOURCE[0]}`/../03-download-srcs.sh
 echo DONE
 echo
 
-# source `dirname ${BASH_SOURCE[0]}`/../04-dir-users.sh
+echo KILL 04-dir-users.sh ...
+source `dirname ${BASH_SOURCE[0]}`/../04-dir-users.sh
+echo DONE
+echo

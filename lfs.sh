@@ -9,7 +9,12 @@ fi
 
 export LFS=/mnt/lfs
 echo LFS=$LFS
-export LFS_CONF=$(dirname `readlink -f $0`)/lfs.conf
+LFS_PROJECT=$(dirname `readlink -f $0`)
+if [ ! -f $LFS_PROJECT/lfs.conf ]; then
+    LFS_PROJECT=$(dirname `readlink -f $LFS_PROJECT/../`)
+fi
+export LFS_PROJECT
+export LFS_CONF=$LFS_PROJECT/lfs.conf
 echo LFS_CONF=$LFS_CONF
 export LFS_BUILD_PROC=$(echo $(nproc) - 1 | bc)
 echo LFS_BUILD_PROC=$LFS_BUILD_PROC
