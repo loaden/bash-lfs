@@ -62,7 +62,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 --disable-libstdcxx                 \
                 --enable-languages=c,c++
             make -j$LFS_BUILD_PROC && make install
-            exit
             if [ $? = 0 ]; then
                 cat ../gcc/limitx.h ../gcc/glimits.h ../gcc/limity.h \
                     > `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
