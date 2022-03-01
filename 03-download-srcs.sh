@@ -1,5 +1,5 @@
 #!/bin/bash
-# 维护：Yuchen Deng QQ群：19346666、111601117
+# QQ群：111601117、钉钉群：35948877
 
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
