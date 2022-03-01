@@ -24,7 +24,8 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         tar -xpvf $(find . -maxdepth 1 -type f -name $PKG_NAME-*.tar.*)
         PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
         pushd $PKG_PATH
-            patch -p1 < $(find $LFS/sources/$(getConf LFS_VERSION) -maxdepth 1 -type f -name $PKG_NAME-*.patch)
+            patch -p1 < $(find .. -maxdepth 1 -type f -name $PKG_NAME-*.patch)
+            [ $? != 0 ] && exit 1
         popd
     fi
 
@@ -40,6 +41,8 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
             make -j$LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
+            else
+                exit 1
             fi
         popd
     fi

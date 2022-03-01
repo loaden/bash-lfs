@@ -21,7 +21,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=gcc
     PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name gcc-*.tar.*)
+        tar -xpvf $(find . -maxdepth 1 -type f -name $PKG_NAME-*.tar.*)
         PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
         pushd $PKG_PATH
             tar -xpvf $(find .. -maxdepth 1 -type f -name mpfr-*.tar.*)
@@ -67,6 +67,8 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                     > `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
                 ls -lh `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
                 touch _BUILD_DONE
+            else
+                exit 1
             fi
         popd
     fi
