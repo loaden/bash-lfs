@@ -24,3 +24,8 @@ echo -e "\033[31mKILL 08-glibc.sh ...\033[0m"
 source `dirname ${BASH_SOURCE[0]}`/../08-glibc.sh
 echo DONE
 echo
+
+echo -e "\033[31mKILL 09-libstdcxx.sh ...\033[0m"
+source `dirname ${BASH_SOURCE[0]}`/../09-libstdcxx.sh
+echo DONE
+echo
