@@ -8,7 +8,7 @@ if [ "$USER" != "lfs" ]; then
     echo "$LFS_PROJECT/`basename ${BASH_SOURCE[0]}`" > /home/lfs/build.sh
     chown lfs:lfs /home/lfs/build.sh
     su - lfs
-    exit
+    return
 fi
 
 # 来自lfs用户的调用
