@@ -5,15 +5,10 @@ source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
 # 配置LFS用户编译任务
 if [ "$USER" != "lfs" ]; then
-    cat > /home/lfs/build.sh <<EOF
-#!/bin/bash
-exec $LFS_PROJECT/`basename ${BASH_SOURCE[0]}`
-exit $?
-EOF
+    echo "$LFS_PROJECT/`basename ${BASH_SOURCE[0]}`" > /home/lfs/build.sh
     chown lfs:lfs /home/lfs/build.sh
-    chmod 0755 /home/lfs/build.sh
     su - lfs
-    return
+    exit
 fi
 
 # 来自lfs用户的调用
@@ -35,7 +30,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 --disable-nls                   \
                 --disable-libstdcxx-pch         \
                 --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/$(getConf LFS_GCC_VERSION)
-            make -j$LFS_BUILD_PROC && make install
+            make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
