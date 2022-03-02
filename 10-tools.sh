@@ -7,22 +7,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     if false; then
 
-    # M4
-    echo M4... && sleep 2
-    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "m4-*")
-    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name m4-*.tar.*) 2>/dev/null
-    build_dir=$(find . -maxdepth 1 -type d -name "m4-*")/build
-    mkdir -v $build_dir
-    pushd $build_dir
-        [ ! $DONT_CONFIG ] && ../configure  \
-            --prefix=/usr                   \
-            --host=$LFS_TGT                 \
-            --build=$(../build-aux/config.guess)
-        make -j $LFS_BUILD_PROC
-        make DESTDIR=$LFS install -j 1
-        read -p "M4 编译结束，任意键继续..." -n 1
-    popd
-
     # Ncurses
     echo Ncurses... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "ncurses-*")
