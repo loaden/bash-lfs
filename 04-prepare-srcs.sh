@@ -17,6 +17,7 @@ if [ "$USER" != "lfs" ]; then
     exit
 fi
 
+# 来自lfs用户的调用
 if [ ! -f $LFS/sources/DONE ]; then
     wget http://mirrors.ustc.edu.cn/lfs/lfs-packages/lfs-packages-$(getConf LFS_VERSION).tar --continue --directory-prefix=$LFS/sources
     tar -xf $LFS/sources/lfs-packages-$(getConf LFS_VERSION).tar --directory $LFS/sources
