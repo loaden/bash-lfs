@@ -3,8 +3,11 @@
 
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
-mkdir -pv $LFS/sources
-chmod -v a+wt $LFS/sources
+if [ ! -d $LFS/sources ]; then
+    mkdir -pv $LFS/sources
+    chmod -v a+wt $LFS/sources
+fi
+
 if [ ! -f $LFS/sources/DONE ]; then
     wget http://mirrors.ustc.edu.cn/lfs/lfs-packages/lfs-packages-$(getConf LFS_VERSION).tar --continue --directory-prefix=$LFS/sources
     tar -xf $LFS/sources/lfs-packages-$(getConf LFS_VERSION).tar --directory $LFS/sources
