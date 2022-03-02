@@ -28,8 +28,6 @@ if [ $? != 0 ]; then
     case $(uname -m) in
         x86_64) chown -v lfs $LFS/lib64 ;;
     esac
-
-    chown -v lfs $LFS/sources
 fi
 
 # 先彻底删除

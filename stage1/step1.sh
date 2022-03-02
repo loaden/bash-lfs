@@ -15,12 +15,12 @@ source `dirname ${BASH_SOURCE[0]}`/../02-mount.sh
 echo DONE
 echo
 
-echo KILL 03-download-srcs.sh ...
-source `dirname ${BASH_SOURCE[0]}`/../03-download-srcs.sh
+echo KILL 03-dir-users.sh ...
+source `dirname ${BASH_SOURCE[0]}`/../03-dir-users.sh
 echo DONE
 echo
 
-echo KILL 04-dir-users.sh ...
-source `dirname ${BASH_SOURCE[0]}`/../04-dir-users.sh
+echo KILL 04-prepare-srcs.sh ...
+source `dirname ${BASH_SOURCE[0]}`/../04-prepare-srcs.sh
 echo DONE
 echo

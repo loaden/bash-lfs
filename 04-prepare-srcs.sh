@@ -6,6 +6,15 @@ source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 if [ ! -d $LFS/sources ]; then
     mkdir -pv $LFS/sources
     chmod -v a+wt $LFS/sources
+    chown -v lfs $LFS/sources
+fi
+
+# 配置LFS用户编译任务
+if [ "$USER" != "lfs" ]; then
+    echo "$LFS_PROJECT/`basename ${BASH_SOURCE[0]}`" > /home/lfs/build.sh
+    chown lfs:lfs /home/lfs/build.sh
+    su - lfs
+    exit
 fi
 
 if [ ! -f $LFS/sources/DONE ]; then
