@@ -49,11 +49,11 @@ PATH=/usr/bin
 if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
 PATH=$LFS/tools/bin:$PATH
 CONFIG_SITE=$LFS/usr/share/config.site
+PS1="(LFS) \u:\w\$ "
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
-cd $LFS_PROJECT
 env | grep -v LS_COLORS
-if [ -f $LFS_HOME/build.sh ]; then
-    bash -c "sleep 0.5 && exec $LFS_HOME/build.sh && exit"
+if [ -f build.sh ]; then
+    bash -c "sleep 0.5 && exec build.sh && exit"
     exit
 fi
 EOF
@@ -63,4 +63,5 @@ exec env -i USER=$LFS_USER HOME=$LFS_HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
 EOF
 
 chown $LFS_USER:$LFS_USER $LFS_HOME/.bash*
-# su - $LFS_USER
+rm -f $LFS_HOME/build.sh
+su - $LFS_USER
