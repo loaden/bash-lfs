@@ -7,39 +7,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     if false; then
 
-    # Ncurses
-    echo Ncurses... && sleep 2
-    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "ncurses-*")
-    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name ncurses-*.tar.*) 2>/dev/null
-    pushd $(find . -maxdepth 1 -type d -name "ncurses-*")
-        sed -i s/mawk// configure
-        mkdir -v build_tic
-        pushd build_tic
-            ../configure
-            make -C include
-            make -C progs tic
-        popd
-
-        mkdir -v build
-        pushd build
-            [ ! $DONT_CONFIG ] && ../configure  \
-                --prefix=/usr                   \
-                --host=$LFS_TGT                 \
-                --build=$(../config.guess)      \
-                --mandir=/usr/share/man         \
-                --with-manpage-format=normal    \
-                --with-shared                   \
-                --without-debug                 \
-                --without-ada                   \
-                --without-normal                \
-                --enable-widec
-            make -j $LFS_BUILD_PROC
-            make DESTDIR=$LFS TIC_PATH=$(pwd)/../build_tic/progs/tic install
-            echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
-            read -p "Ncurses 编译结束，任意键继续..." -n 1
-        popd
-    popd
-
     # Bash
     echo Bash... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "bash-*")
