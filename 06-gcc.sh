@@ -11,7 +11,6 @@ if [ "$USER" != "lfs" ]; then
     exit
 fi
 
-
 # 来自lfs用户的调用
 pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=gcc
