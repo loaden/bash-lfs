@@ -27,12 +27,6 @@ echo LFS_CONF=$LFS_CONF
 export LFS_BUILD_PROC=$(echo $(nproc) - 1 | bc)
 echo LFS_BUILD_PROC=$LFS_BUILD_PROC
 
-# 所有的编译工作都要在$LFS_USER用户下进行
-export LFS_USER=lfs
-echo LFS_USER=$LFS_USER
-export LFS_HOME=/home/$LFS_USER
-echo LFS_HOME=$LFS_HOME
-
 function getConf() {
     str=$(cat $LFS_CONF | grep $1)
     ret=${str#*=}

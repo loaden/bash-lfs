@@ -4,15 +4,15 @@
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
 # 配置LFS用户编译任务
-if [ "$USER" != "$LFS_USER" ]; then
-    cat > $LFS_HOME/build.sh <<EOF
+if [ "$USER" != "lfs" ]; then
+    cat > /home/lfs/build.sh <<EOF
 #!/bin/bash
 exec $LFS_PROJECT/`basename ${BASH_SOURCE[0]}`
 exit $?
 EOF
-    chown $LFS_USER:$LFS_USER $LFS_HOME/build.sh
-    chmod 0755 $LFS_HOME/build.sh
-    su - $LFS_USER
+    chown lfs:lfs /home/lfs/build.sh
+    chmod 0755 /home/lfs/build.sh
+    su - lfs
     return
 fi
 
