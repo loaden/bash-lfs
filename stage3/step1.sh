@@ -9,3 +9,8 @@ echo -e "\033[31mKILL 33-man-pages-iana-etc.sh ...\033[0m"
 source `dirname ${BASH_SOURCE[0]}`/../33-man-pages-iana-etc.sh
 echo DONE
 echo
+
+echo -e "\033[31mKILL 34-glibc-zlib-bzip2.sh ...\033[0m"
+source `dirname ${BASH_SOURCE[0]}`/../34-glibc-zlib-bzip2.sh
+echo DONE
+echo
