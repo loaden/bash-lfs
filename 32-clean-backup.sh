@@ -15,7 +15,9 @@ EOF
 source `dirname ${BASH_SOURCE[0]}`/chroot.sh "$HAVE_WORK_TODO"
 
 # 备份
-umount -lf $LFS/home
 pushd $LFS
-    tar --exclude=boot --exclude=home -capvf $LFS_PROJECT/lfs-stage2-$(getConf LFS_VERSION).tar.zst .
+    BAK_FILE=$LFS_PROJECT/lfs-stage2-$(getConf LFS_VERSION).tar.zst
+    if [ ! $BAK_FILE ]; then
+        tar --exclude=boot --exclude=home -capvf $BAK_FILE .
+    fi
 popd
