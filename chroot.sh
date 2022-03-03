@@ -8,8 +8,6 @@ mkdir -pv $LFS/{dev,proc,sys,run}
 [ -e $LFS/dev/console ] || mknod -m 600 $LFS/dev/console c 5 1
 [ -e $LFS/dev/null ]    || mknod -m 666 $LFS/dev/null c 1 3
 
-[ -e $LFS/dev/console ] && echo OOOOOOOOOOOOO
-
 # 挂载和填充/dev
 mount -v --bind /dev $LFS/dev
 
