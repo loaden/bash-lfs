@@ -3,10 +3,7 @@
 
 # 安排战术
 IFS='' read -r -d '' HAVE_WORK_TODO <<EOF
-[ -f _INIT_CHROOT_DONE ] && return
-
-# 创建挂载点
-mkdir -pv /{dev,proc,sys,run}
+[ -f _INIT_CHROOT_DONE ] && exit
 
 # 恢复文件所有者为root老大
 chown -R root:root /{usr,lib,var,etc,bin,sbin,tools}
@@ -102,7 +99,9 @@ END
 echo "tester:x:101:101::/home/tester:/bin/bash" >> /etc/passwd
 echo "tester:x:101:" >> /etc/group
 install -o tester -d /home/tester
-exec /usr/bin/bash --login
+
+# 移除 “I have no name!” 提示符
+echo exit | exec /usr/bin/bash --login
 
 # 初始化日志文件
 touch /var/log/{btmp,lastlog,faillog,wtmp}
