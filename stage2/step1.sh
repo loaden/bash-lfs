@@ -19,3 +19,8 @@ echo -e "\033[31mKILL 12-bash.sh ...\033[0m"
 source `dirname ${BASH_SOURCE[0]}`/../12-bash.sh
 echo DONE
 echo
+
+echo -e "\033[31mKILL 13-coreutils.sh ...\033[0m"
+source `dirname ${BASH_SOURCE[0]}`/../13-coreutils.sh
+echo DONE
+echo
