@@ -7,24 +7,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     if false; then
 
-    # Bash
-    echo Bash... && sleep 2
-    [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "bash-*")
-    [ ! $DONT_CONFIG ] && tar --keep-newer-files -xf $(find . -maxdepth 1 -type f -name bash-*.tar.*) 2>/dev/null
-    build_dir=$(find . -maxdepth 1 -type d -name "bash-*")/build
-    mkdir -v $build_dir
-    pushd $build_dir
-        [ ! $DONT_CONFIG ] && ../configure      \
-            --prefix=/usr                       \
-            --build=$(../support/config.guess)  \
-            --host=$LFS_TGT                     \
-            --without-bash-malloc
-        make -j $LFS_BUILD_PROC
-        make DESTDIR=$LFS install -j 1
-        ln -sfv bash $LFS/bin/sh
-        read -p "Bash 编译结束，任意键继续..." -n 1
-    popd
-
     # Coreutils
     echo Coreutils... && sleep 2
     [ "$CLEAN" ] && rm -rf $(find . -maxdepth 1 -type d -name "coreutils-*")
