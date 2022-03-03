@@ -14,3 +14,8 @@ echo -e "\033[31mKILL 26-gcc.sh ...\033[0m"
 source `dirname ${BASH_SOURCE[0]}`/../26-gcc.sh
 echo DONE
 echo
+
+echo -e "\033[31mKILL 27-prepare-chroot.sh ...\033[0m"
+source `dirname ${BASH_SOURCE[0]}`/../27-init-chroot.sh
+echo DONE
+echo
