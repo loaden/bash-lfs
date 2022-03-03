@@ -16,7 +16,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=ncurses
     PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name $PKG_NAME-*.tar.*)
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
         PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
