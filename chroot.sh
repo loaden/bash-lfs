@@ -8,13 +8,12 @@ mkdir -pv $LFS/{dev,proc,sys,run}
 [ -e $LFS/dev/console ] || mknod -m 600 $LFS/dev/console c 5 1
 [ -e $LFS/dev/null ]    || mknod -m 666 $LFS/dev/null c 1 3
 
-# 挂载和填充/dev
-mount -v --bind /dev $LFS/dev
-
-# 挂载虚拟内核文件系统
-mount -v --bind /dev/pts $LFS/dev/pts
-mount -vt proc proc $LFS/proc
-mount -vt sysfs sysfs $LFS/sys
+# 挂载
+mount -v --types proc /proc $LFS/proc
+mount -v --rbind /sys $LFS/sys
+mount -v --make-rslave $LFS/sys
+mount -v --rbind /dev $LFS/dev
+mount -v --make-rslave $LFS/dev
 mount -vt tmpfs tmpfs $LFS/run
 if [ -h $LFS/dev/shm ]; then
     mkdir -pv $LFS/$(readlink $LFS/dev/shm)
@@ -34,9 +33,9 @@ chroot "$LFS" /usr/bin/env -i   \
 
 # 卸载虚拟内核文件系统
 sleep 0.3
-umount -lf $LFS/dev/pts
-umount -lf $LFS/dev
-umount -lf $LFS/proc
-umount -lf $LFS/sys
-umount -lf $LFS/run
+umount -lfv $LFS/dev/pts
+umount -lfv $LFS/dev
+umount -lfv $LFS/proc
+umount -lfv $LFS/sys
+umount -lfv $LFS/run
 sleep 0.2

@@ -6,17 +6,20 @@
 #
 
 echo KILL 01-version-check.sh ...
-source `dirname ${BASH_SOURCE[0]}`/../01-version-check.sh
+bash `dirname ${BASH_SOURCE[0]}`/../01-version-check.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo KILL 02-mount.sh ...
-source `dirname ${BASH_SOURCE[0]}`/../02-mount.sh
+bash `dirname ${BASH_SOURCE[0]}`/../02-mount.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo KILL 03-dir-users.sh ...
-source `dirname ${BASH_SOURCE[0]}`/../03-dir-users.sh
+bash `dirname ${BASH_SOURCE[0]}`/../03-dir-users.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
