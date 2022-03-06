@@ -6,26 +6,31 @@
 #
 
 echo -e "\033[31mKILL 05-binutils.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../05-binutils.sh
+bash `dirname ${BASH_SOURCE[0]}`/../05-binutils.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo -e "\033[31mKILL 06-gcc.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../06-gcc.sh
+bash `dirname ${BASH_SOURCE[0]}`/../06-gcc.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo -e "\033[31mKILL 07-linux-api.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../07-linux-api.sh
+bash `dirname ${BASH_SOURCE[0]}`/../07-linux-api.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo -e "\033[31mKILL 08-glibc.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../08-glibc.sh
+bash `dirname ${BASH_SOURCE[0]}`/../08-glibc.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo -e "\033[31mKILL 09-libstdcxx.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../09-libstdcxx.sh
+bash `dirname ${BASH_SOURCE[0]}`/../09-libstdcxx.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo

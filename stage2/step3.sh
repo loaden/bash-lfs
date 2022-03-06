@@ -6,26 +6,31 @@
 #
 
 echo -e "\033[31mKILL 28-libstdcxx.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../28-libstdcxx.sh
+bash `dirname ${BASH_SOURCE[0]}`/../28-libstdcxx.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo -e "\033[31mKILL 29-gettext-bison.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../29-gettext-bison.sh
+bash `dirname ${BASH_SOURCE[0]}`/../29-gettext-bison.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo -e "\033[31mKILL 30-perl-python.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../30-perl-python.sh
+bash `dirname ${BASH_SOURCE[0]}`/../30-perl-python.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo -e "\033[31mKILL 31-texinfo-util-linux.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../31-texinfo-util-linux.sh
+bash `dirname ${BASH_SOURCE[0]}`/../31-texinfo-util-linux.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
 
 echo -e "\033[31mKILL 32-clean-backup.sh ...\033[0m"
-source `dirname ${BASH_SOURCE[0]}`/../32-clean-backup.sh
+bash `dirname ${BASH_SOURCE[0]}`/../32-clean-backup.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo

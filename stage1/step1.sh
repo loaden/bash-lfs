@@ -21,6 +21,7 @@ echo DONE
 echo
 
 echo KILL 04-prepare-srcs.sh ...
-source `dirname ${BASH_SOURCE[0]}`/../04-prepare-srcs.sh
+bash `dirname ${BASH_SOURCE[0]}`/../04-prepare-srcs.sh
+[ $? = 0 ] || exit 2
 echo DONE
 echo
