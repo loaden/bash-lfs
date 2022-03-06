@@ -19,14 +19,14 @@ pushd /sources/$(getConf LFS_VERSION)
 
     if [ ! -f \$PKG_PATH/_BUILD_DONE ]; then
         pushd \$PKG_PATH
-            sh Configure -des                                       \
-                        -Dprefix=/usr                               \
-                        -Dvendorprefix=/usr                         \
-                        -Dprivlib=/usr/lib/perl5/5.34/core_perl     \
-                        -Darchlib=/usr/lib/perl5/5.34/core_perl     \
-                        -Dsitelib=/usr/lib/perl5/5.34/site_perl     \
-                        -Dsitearch=/usr/lib/perl5/5.34/site_perl    \
-                        -Dvendorlib=/usr/lib/perl5/5.34/vendor_perl \
+            sh Configure -des                                       \\
+                        -Dprefix=/usr                               \\
+                        -Dvendorprefix=/usr                         \\
+                        -Dprivlib=/usr/lib/perl5/5.34/core_perl     \\
+                        -Darchlib=/usr/lib/perl5/5.34/core_perl     \\
+                        -Dsitelib=/usr/lib/perl5/5.34/site_perl     \\
+                        -Dsitearch=/usr/lib/perl5/5.34/site_perl    \\
+                        -Dvendorlib=/usr/lib/perl5/5.34/vendor_perl \\
                         -Dvendorarch=/usr/lib/perl5/5.34/vendor_perl
             make -j$LFS_BUILD_PROC && make install
             if [ \$? = 0 ]; then
@@ -48,8 +48,8 @@ pushd /sources/$(getConf LFS_VERSION)
 
     if [ ! -f \$PKG_PATH/_BUILD_DONE ]; then
         pushd \$PKG_PATH
-            ./configure --prefix=/usr   \
-                --enable-shared         \
+            ./configure --prefix=/usr   \\
+                --enable-shared         \\
                 --without-ensurepip
             make -j$LFS_BUILD_PROC && make install
             if [ \$? = 0 ]; then

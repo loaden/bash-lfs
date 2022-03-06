@@ -15,23 +15,26 @@ pushd /sources/$(getConf LFS_VERSION)
     if [ ! -f \$PKG_PATH/build_2/_BUILD_DONE ]; then
         mkdir -pv \$PKG_PATH/build_2
         pushd \$PKG_PATH/build_2
-            ../configure --prefix=/usr                   \
-                --disable-werror                         \
-                --enable-kernel=3.2                      \
-                --enable-stack-protector=strong          \
-                --with-headers=/usr/include              \
+            ../configure --prefix=/usr          \\
+                --disable-werror                \\
+                --enable-kernel=3.2             \\
+                --enable-stack-protector=strong \\
+                --with-headers=/usr/include     \\
                 libc_cv_slibdir=/usr/lib
-            make -j$LFS_BUILD_PROC
+            make -j1
+            read -p 'make -j1'
             if [ \$? = 0 ]; then
                 # 测试很重要
                 # 已知失败： io/tst-lchmod misc/tst-ttyname nss/tst-nss-file-hosts-multi
-                make check
+                make -j1 check
+                read -p 'make check'
                 # 不要抱怨
                 touch /etc/ld.so.conf
                 # 跳过完整性检查
-                sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
+                sed '/test-installation/s@\$(PERL)@echo not running@' -i ../Makefile
                 # 安装
                 make install
+                read -p 'make install'
                 # 改正 ldd 脚本中硬编码的可执行文件加载器路径
                 sed '/RTLDLIST=/s@/usr@@g' -i /usr/bin/ldd
                 # 安装 nscd 的配置文件和运行时目录
@@ -103,13 +106,13 @@ END
                 tar -xf ../../tzdata2021e.tar.gz
 
                 ZONEINFO=/usr/share/zoneinfo
-                mkdir -pv $ZONEINFO/{posix,right}
+                mkdir -pv \$ZONEINFO/{posix,right}
 
-                for tz in etcetera southamerica northamerica europe africa antarctica  \
+                for tz in etcetera southamerica northamerica europe africa antarctica  \\
                         asia australasia backward; do
-                    zic -L /dev/null   -d $ZONEINFO       \${tz}
-                    zic -L /dev/null   -d $ZONEINFO/posix \${tz}
-                    zic -L leapseconds -d $ZONEINFO/right \${tz}
+                    zic -L /dev/null   -d \$ZONEINFO       \${tz}
+                    zic -L /dev/null   -d \$ZONEINFO/posix \${tz}
+                    zic -L leapseconds -d \$ZONEINFO/right \${tz}
                 done
 
                 cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
@@ -128,6 +131,8 @@ END
 # Add an include directory
 include /etc/ld.so.conf.d/*.conf
 END
+                read -p 'done'
+
                 # 写入完成标志
                 touch _BUILD_DONE
             else
@@ -173,7 +178,7 @@ pushd /sources/$(getConf LFS_VERSION)
     if [ ! -f \$PKG_PATH/_BUILD_DONE ]; then
         pushd \$PKG_PATH
             # 保证安装的符号链接是相对的
-            sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+            sed -i 's@\(ln -s -f \)\$(PREFIX)/bin/@\1@' Makefile
             # 确保 man 页面被安装到正确位置
             sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
             # 准备编译
@@ -202,4 +207,6 @@ popd
 EOF
 
 # 战斗啦
+# echo "$HAVE_WORK_TODO" > debug.sh
+# chmod 777 debug.sh
 source `dirname ${BASH_SOURCE[0]}`/chroot.sh "$HAVE_WORK_TODO"

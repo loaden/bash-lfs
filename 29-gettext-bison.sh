@@ -37,7 +37,7 @@ pushd /sources/$(getConf LFS_VERSION)
 
     if [ ! -f \$PKG_PATH/_BUILD_DONE ]; then
         pushd \$PKG_PATH
-            ./configure --prefix=/usr \
+            ./configure --prefix=/usr   \\
                 --docdir=/usr/share/doc/bison-3.8.2
             make -j$LFS_BUILD_PROC && make install
             if [ \$? = 0 ]; then

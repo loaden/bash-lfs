@@ -15,12 +15,12 @@ pushd /sources/$(getConf LFS_VERSION)
     if [ ! -f \$PKG_PATH/build_cxx_2/_BUILD_DONE ]; then
         mkdir -pv \$PKG_PATH/build_cxx_2
         pushd \$PKG_PATH/build_cxx_2
-            ../libstdc++-v3/configure            \
-                CXXFLAGS="-g -O2 -D_GNU_SOURCE"  \
-                --prefix=/usr                    \
-                --disable-multilib               \
-                --disable-nls                    \
-                --host=\$(uname -m)-lfs-linux-gnu \
+            ../libstdc++-v3/configure               \\
+                CXXFLAGS="-g -O2 -D_GNU_SOURCE"     \\
+                --prefix=/usr                       \\
+                --disable-multilib                  \\
+                --disable-nls                       \\
+                --host=\$(uname -m)-lfs-linux-gnu   \\
                 --disable-libstdcxx-pch
             make -j$LFS_BUILD_PROC && make install
             if [ \$? = 0 ]; then
