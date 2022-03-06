@@ -31,6 +31,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 ln -sv bash $LFS/bin/sh
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd

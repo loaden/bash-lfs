@@ -28,6 +28,7 @@ pushd /sources/_LFS_VERSION
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd
@@ -62,6 +63,7 @@ pushd /sources/_LFS_VERSION
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd

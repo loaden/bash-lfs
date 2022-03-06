@@ -144,6 +144,7 @@ EOF
                 # 写入完成标志
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd
@@ -166,6 +167,7 @@ pushd /sources/_LFS_VERSION
                 rm -fv /usr/lib/libz.a
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd
@@ -206,6 +208,7 @@ pushd /sources/_LFS_VERSION
                 rm -fv /usr/lib/libbz2.a
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd

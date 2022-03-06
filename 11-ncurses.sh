@@ -45,6 +45,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd

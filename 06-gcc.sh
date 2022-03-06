@@ -64,6 +64,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 ls -lh `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd

@@ -58,6 +58,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 $LFS/tools/libexec/gcc/$LFS_TGT/$(getConf LFS_GCC_VERSION)/install-tools/mkheaders
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd

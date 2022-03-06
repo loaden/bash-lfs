@@ -39,6 +39,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 sed -i 's/"1"/"8"/'                    $LFS/usr/share/man/man8/chroot.8
                 touch _BUILD_DONE
             else
+                pwd
                 exit 1
             fi
         popd
