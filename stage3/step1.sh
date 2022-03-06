@@ -14,3 +14,8 @@ echo -e "\033[31mKILL 34-glibc-zlib-bzip2.sh ...\033[0m"
 source `dirname ${BASH_SOURCE[0]}`/../34-glibc-zlib-bzip2.sh
 echo DONE
 echo
+
+echo -e "\033[31mKILL 35-xz-zstd-file-readline-m4-bc-flex.sh ...\033[0m"
+source `dirname ${BASH_SOURCE[0]}`/../35-xz-zstd-file-readline-m4-bc-flex.sh
+echo DONE
+echo
