@@ -21,6 +21,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
         mkdir -pv $PKG_PATH/build_2
         pushd $PKG_PATH/build_2
+            echo "rootsbindir=/usr/sbin" > configparms
             ../configure --prefix=/usr          \
                 --disable-werror                \
                 --enable-kernel=3.2             \

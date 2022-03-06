@@ -28,6 +28,8 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH/build
             case $(uname -m) in
+                i?86)   ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3
+                ;;
                 x86_64) ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64
                         ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64/ld-lsb-x86-64.so.3
                 ;;
