@@ -11,7 +11,7 @@ if [ ! -f $LFS/task.sh ]; then
 fi
 
 # 来自chroot之后的调用
-[ -f _INIT_CHROOT_DONE ] && exit
+[ -f /_INIT_CHROOT_DONE ] && exit
 
 # 恢复文件所有者为root老大
 chown -R root:root /{usr,lib,var,etc,bin,sbin,tools}
@@ -118,4 +118,4 @@ chmod -v 664  /var/log/lastlog
 chmod -v 600  /var/log/btmp
 
 # 完成CHROOT环境初始化
-touch _INIT_CHROOT_DONE
+touch /_INIT_CHROOT_DONE
