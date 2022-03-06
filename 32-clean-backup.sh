@@ -10,7 +10,7 @@ if [ ! -f $LFS/task.sh ]; then
     # 备份
     pushd $LFS
         BAK_FILE=$LFS_PROJECT/lfs-stage2-$(getConf LFS_VERSION).tar.zst
-        if [ ! $BAK_FILE ]; then
+        if [ ! -f $BAK_FILE ]; then
             tar --exclude=boot --exclude=home -capvf $BAK_FILE .
         fi
     popd
