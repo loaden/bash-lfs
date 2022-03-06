@@ -27,9 +27,10 @@ chroot "$LFS" /usr/bin/env -i   \
     TERM="$TERM"                \
     PS1='(lfs chroot) \u:\w\$ ' \
     PATH=/usr/bin:/usr/sbin     \
-    /bin/bash -c "$1"
+    /bin/bash "/task.sh"
 
 # 卸载虚拟内核文件系统
+sleep 0.3
 umount -lf $LFS/dev/pts
 umount -lf $LFS/dev
 umount -lf $LFS/proc

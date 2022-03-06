@@ -1,15 +1,21 @@
 #!/bin/bash
 # QQ群：111601117、钉钉群：35948877
 
-source `dirname ${BASH_SOURCE[0]}`/lfs.sh
+if [ ! -f $LFS/task.sh ]; then
+    source `dirname ${BASH_SOURCE[0]}`/lfs.sh
+    cp -v ${BASH_SOURCE[0]} $LFS/task.sh
+    sed "s/_LFS_VERSION/$(getConf LFS_VERSION)/g" -i $LFS/task.sh
+    source `dirname ${BASH_SOURCE[0]}`/chroot.sh
+    rm -fv $LFS/task.sh
+    exit
+fi
 
-# 安排战术
-IFS='' read -r -d '' HAVE_WORK_TODO <<EOF
+# 来自chroot之后的调用
 [ -f _INIT_CHROOT_DONE ] && exit
 
 # 恢复文件所有者为root老大
 chown -R root:root /{usr,lib,var,etc,bin,sbin,tools}
-case \$(uname -m) in
+case $(uname -m) in
     x86_64) chown -R root:root /lib64 ;;
 esac
 
@@ -36,13 +42,13 @@ install -dv -m 1777 /tmp /var/tmp
 # 创建必要的文件和符号链接
 ln -sv /proc/self/mounts /etc/mtab
 
-cat > /etc/hosts << END
+cat > /etc/hosts << EOF
 127.0.0.1  localhost $(hostname)
 ::1        localhost
-END
+EOF
 
 # 创建 /etc/passwd 文件
-cat > /etc/passwd << "END"
+cat > /etc/passwd << "EOF"
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/dev/null:/usr/bin/false
 daemon:x:6:6:Daemon User:/dev/null:/usr/bin/false
@@ -57,10 +63,10 @@ systemd-coredump:x:79:79:systemd Core Dumper:/:/usr/bin/false
 uuidd:x:80:80:UUID Generation Daemon User:/dev/null:/usr/bin/false
 systemd-oom:x:81:81:systemd Out Of Memory Daemon:/:/usr/bin/false
 nobody:x:99:99:Unprivileged User:/dev/null:/usr/bin/false
-END
+EOF
 
 # 创建 /etc/group 文件
-cat > /etc/group << "END"
+cat > /etc/group << "EOF"
 root:x:0:
 bin:x:1:daemon
 sys:x:2:
@@ -95,7 +101,7 @@ systemd-oom:x:81:
 wheel:x:97:
 nogroup:x:99:
 users:x:999:
-END
+EOF
 
 # 创建测试用户
 echo "tester:x:101:101::/home/tester:/bin/bash" >> /etc/passwd
@@ -111,9 +117,5 @@ chgrp -v utmp /var/log/lastlog
 chmod -v 664  /var/log/lastlog
 chmod -v 600  /var/log/btmp
 
-# 安排完毕
+# 完成CHROOT环境初始化
 touch _INIT_CHROOT_DONE
-EOF
-
-# 战斗啦
-source `dirname ${BASH_SOURCE[0]}`/chroot.sh "$HAVE_WORK_TODO"

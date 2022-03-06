@@ -1,37 +1,43 @@
 #!/bin/bash
 # QQ群：111601117、钉钉群：35948877
 
-source `dirname ${BASH_SOURCE[0]}`/lfs.sh
+if [ ! -f $LFS/task.sh ]; then
+    source `dirname ${BASH_SOURCE[0]}`/lfs.sh
+    cp -v ${BASH_SOURCE[0]} $LFS/task.sh
+    sed "s/_LFS_VERSION/$(getConf LFS_VERSION)/g" -i $LFS/task.sh
+    source `dirname ${BASH_SOURCE[0]}`/chroot.sh
+    rm -fv $LFS/task.sh
+    exit
+fi
 
-# 安排战术
-IFS='' read -r -d '' HAVE_WORK_TODO <<EOF
-pushd /sources/$(getConf LFS_VERSION)
+# 来自chroot之后的调用
+pushd /sources/_LFS_VERSION
     PKG_NAME=glibc
-    PKG_PATH=\$(find . -maxdepth 1 -type d -name "\$PKG_NAME-*")
-    if [ -z \$PKG_PATH ]; then
+    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
         exit 1
     fi
 
-    if [ ! -f \$PKG_PATH/build_2/_BUILD_DONE ]; then
-        mkdir -pv \$PKG_PATH/build_2
-        pushd \$PKG_PATH/build_2
-            ../configure --prefix=/usr          \\
-                --disable-werror                \\
-                --enable-kernel=3.2             \\
-                --enable-stack-protector=strong \\
-                --with-headers=/usr/include     \\
+    if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
+        mkdir -pv $PKG_PATH/build_2
+        pushd $PKG_PATH/build_2
+            ../configure --prefix=/usr          \
+                --disable-werror                \
+                --enable-kernel=3.2             \
+                --enable-stack-protector=strong \
+                --with-headers=/usr/include     \
                 libc_cv_slibdir=/usr/lib
-            make -j1
-            read -p 'make -j1'
-            if [ \$? = 0 ]; then
+            make
+            read -p 'make'
+            if [ $? = 0 ]; then
                 # 测试很重要
                 # 已知失败： io/tst-lchmod misc/tst-ttyname nss/tst-nss-file-hosts-multi
-                make -j1 check
+                make check
                 read -p 'make check'
                 # 不要抱怨
                 touch /etc/ld.so.conf
                 # 跳过完整性检查
-                sed '/test-installation/s@\$(PERL)@echo not running@' -i ../Makefile
+                sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
                 # 安装
                 make install
                 read -p 'make install'
@@ -80,12 +86,13 @@ pushd /sources/$(getConf LFS_VERSION)
                 localedef -i zh_CN -f GB18030 zh_CN.GB18030
                 localedef -i zh_HK -f BIG5-HKSCS zh_HK.BIG5-HKSCS
                 localedef -i zh_TW -f UTF-8 zh_TW.UTF-8
+                localedef -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
+                localedef -i ja_JP -f SHIFT_JIS ja_JP.SJIS 2> /dev/null || true
 
                 # 配置glibc
                 # --------
-
                 # 创建 nsswitch.conf
-                cat > /etc/nsswitch.conf << "END"
+                cat > /etc/nsswitch.conf << "EOF"
 # Begin /etc/nsswitch.conf
 
 passwd: files
@@ -101,18 +108,18 @@ ethers: files
 rpc: files
 
 # End /etc/nsswitch.conf
-END
+EOF
                 # 添加时区数据
                 tar -xf ../../tzdata2021e.tar.gz
 
                 ZONEINFO=/usr/share/zoneinfo
-                mkdir -pv \$ZONEINFO/{posix,right}
+                mkdir -pv $ZONEINFO/{posix,right}
 
-                for tz in etcetera southamerica northamerica europe africa antarctica  \\
+                for tz in etcetera southamerica northamerica europe africa antarctica  \
                         asia australasia backward; do
-                    zic -L /dev/null   -d \$ZONEINFO       \${tz}
-                    zic -L /dev/null   -d \$ZONEINFO/posix \${tz}
-                    zic -L leapseconds -d \$ZONEINFO/right \${tz}
+                    zic -L /dev/null   -d $ZONEINFO       ${tz}
+                    zic -L /dev/null   -d $ZONEINFO/posix ${tz}
+                    zic -L leapseconds -d $ZONEINFO/right ${tz}
                 done
 
                 cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
@@ -124,13 +131,13 @@ END
 
                 # 配置动态加载器
                 mkdir -pv /etc/ld.so.conf.d
-                cat > /etc/ld.so.conf << "END"
+                cat > /etc/ld.so.conf << "EOF"
 # Begin /etc/ld.so.conf
 /usr/local/lib
 /opt/lib
 # Add an include directory
 include /etc/ld.so.conf.d/*.conf
-END
+EOF
                 read -p 'done'
 
                 # 写入完成标志
@@ -142,19 +149,20 @@ END
     fi
 popd
 
-pushd /sources/$(getConf LFS_VERSION)
+pushd /sources/_LFS_VERSION
     PKG_NAME=zlib
-    PKG_PATH=\$(find . -maxdepth 1 -type d -name "\$PKG_NAME-*")
-    if [ -z \$PKG_PATH ]; then
-        tar -xpvf \$(find . -maxdepth 1 -type f -name "\$PKG_NAME-*.tar.*")
-        PKG_PATH=\$(find . -maxdepth 1 -type d -name "\$PKG_NAME-*")
+    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
+        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f \$PKG_PATH/_BUILD_DONE ]; then
-        pushd \$PKG_PATH
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
             ./configure --prefix=/usr
             make -j$LFS_BUILD_PROC && make check && make install
-            if [ \$? = 0 ]; then
+            if [ $? = 0 ]; then
+                rm -fv /usr/lib/libz.a
                 touch _BUILD_DONE
             else
                 exit 1
@@ -163,22 +171,22 @@ pushd /sources/$(getConf LFS_VERSION)
     fi
 popd
 
-pushd /sources/$(getConf LFS_VERSION)
+pushd /sources/_LFS_VERSION
     PKG_NAME=bzip2
-    PKG_PATH=\$(find . -maxdepth 1 -type d -name "\$PKG_NAME-*")
-    if [ -z \$PKG_PATH ]; then
-        tar -xpvf \$(find . -maxdepth 1 -type f -name "\$PKG_NAME-*.tar.*")
-        PKG_PATH=\$(find . -maxdepth 1 -type d -name "\$PKG_NAME-*")
-        pushd \$PKG_PATH
-            find .. -maxdepth 1 -type f -name "\$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
-            [ \$? != 0 ] && exit 1
+    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
+        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        pushd $PKG_PATH
+            find .. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
+            [ $? != 0 ] && exit 1
         popd
     fi
 
-    if [ ! -f \$PKG_PATH/_BUILD_DONE ]; then
-        pushd \$PKG_PATH
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
             # 保证安装的符号链接是相对的
-            sed -i 's@\(ln -s -f \)\$(PREFIX)/bin/@\1@' Makefile
+            sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
             # 确保 man 页面被安装到正确位置
             sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
             # 准备编译
@@ -186,13 +194,13 @@ pushd /sources/$(getConf LFS_VERSION)
             make clean
             # 编译
             make -j$LFS_BUILD_PROC && make PREFIX=/usr install
-            if [ \$? = 0 ]; then
+            if [ $? = 0 ]; then
                 # 安装共享库
                 cp -av libbz2.so.* /usr/lib
                 ln -sv libbz2.so.1.0.8 /usr/lib/libbz2.so
                 cp -v bzip2-shared /usr/bin/bzip2
                 for i in /usr/bin/{bzcat,bunzip2}; do
-                    ln -sfv bzip2 \$i
+                    ln -sfv bzip2 $i
                 done
                 rm -fv /usr/lib/libbz2.a
                 touch _BUILD_DONE
@@ -202,11 +210,3 @@ pushd /sources/$(getConf LFS_VERSION)
         popd
     fi
 popd
-
-# 安排完毕
-EOF
-
-# 战斗啦
-# echo "$HAVE_WORK_TODO" > debug.sh
-# chmod 777 debug.sh
-source `dirname ${BASH_SOURCE[0]}`/chroot.sh "$HAVE_WORK_TODO"
