@@ -21,13 +21,16 @@ if [ -h $LFS/dev/shm ]; then
 fi
 
 # 懒虫，干活了！
-sleep 0.1
+sleep 0.2
 chroot "$LFS" /usr/bin/env -i   \
     HOME=/root                  \
     TERM="$TERM"                \
     PS1='(lfs chroot) \u:\w\$ ' \
     PATH=/usr/bin:/usr/sbin     \
-    /bin/bash "/task.sh"
+    /bin/bash -c "set +h &&
+                  umask 022 &&
+                  env &&
+                  /task.sh"
 
 # 卸载虚拟内核文件系统
 sleep 0.3

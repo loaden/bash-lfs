@@ -7,7 +7,7 @@ if [ ! -f $LFS/task.sh ]; then
     sed "s/_LFS_VERSION/$(getConf LFS_VERSION)/g" -i $LFS/task.sh
     source `dirname ${BASH_SOURCE[0]}`/chroot.sh
     rm -fv $LFS/task.sh
-    return
+    exit
 fi
 
 # 来自chroot之后的调用
