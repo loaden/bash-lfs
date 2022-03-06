@@ -14,7 +14,7 @@ if [ ! -f $LFS/task.sh ]; then
             tar --exclude=boot --exclude=home -capvf $BAK_FILE .
         fi
     popd
-    exit
+    return
 fi
 
 # 来自chroot之后的调用
