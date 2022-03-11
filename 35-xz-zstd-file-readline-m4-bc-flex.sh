@@ -24,7 +24,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --disable-static        \
                 --docdir=/usr/share/doc/xz-5.2.5
-            make -j$LFS_BUILD_PROC && make check && make install
+            make -j$LFS_BUILD_PROC && make -j$LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -45,7 +45,7 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make -j$LFS_BUILD_PROC && make check && make prefix=/usr install
+            make -j$LFS_BUILD_PROC && make -j$LFS_BUILD_PROC check && make prefix=/usr install
             if [ $? = 0 ]; then
                 rm -v /usr/lib/libzstd.a
                 touch _BUILD_DONE
@@ -68,7 +68,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             ./configure --prefix=/usr
-            make -j$LFS_BUILD_PROC && make check && make install
+            make -j$LFS_BUILD_PROC && make -j$LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -123,7 +123,7 @@ pushd /sources/_LFS_VERSION
         mkdir -pv $PKG_PATH/build_2
         pushd $PKG_PATH/build_2
             ../configure --prefix=/usr
-            make -j$LFS_BUILD_PROC && make check && make install
+            make -j$LFS_BUILD_PROC && make -j$LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -146,7 +146,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             CC=gcc ./configure --prefix=/usr -G -O3
-            make -j$LFS_BUILD_PROC && make test && make install
+            make -j$LFS_BUILD_PROC && make -j$LFS_BUILD_PROC test && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -171,7 +171,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr \
                 --docdir=/usr/share/doc/flex-2.6.4 \
                 --disable-static
-            make -j$LFS_BUILD_PROC && make check && make install
+            make -j$LFS_BUILD_PROC && make -j$LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 ln -sv flex /usr/bin/lex
                 touch _BUILD_DONE

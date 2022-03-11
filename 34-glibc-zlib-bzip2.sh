@@ -28,12 +28,12 @@ pushd /sources/_LFS_VERSION
                 --enable-stack-protector=strong \
                 --with-headers=/usr/include     \
                 libc_cv_slibdir=/usr/lib
-            make
+            make -j$LFS_BUILD_PROC
             read -p 'make'
             if [ $? = 0 ]; then
                 # 测试很重要
                 # 已知失败： io/tst-lchmod misc/tst-ttyname nss/tst-nss-file-hosts-multi
-                make check
+                make -j$LFS_BUILD_PROC check
                 read -p 'make check'
                 # 不要抱怨
                 touch /etc/ld.so.conf
@@ -162,7 +162,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             ./configure --prefix=/usr
-            make -j$LFS_BUILD_PROC && make check && make install
+            make -j$LFS_BUILD_PROC && make -j$LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 rm -fv /usr/lib/libz.a
                 touch _BUILD_DONE
