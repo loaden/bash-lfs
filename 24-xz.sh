@@ -26,7 +26,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 --host=$LFS_TGT                   \
                 --build=$(build-aux/config.guess) \
                 --disable-static                  \
-                --docdir=/usr/share/doc/xz-5.2.5
+                --docdir=/usr/share/doc/xz
             make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE

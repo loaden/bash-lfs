@@ -24,7 +24,7 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             ./configure --prefix=/usr   \
                 --disable-static        \
-                --docdir=/usr/share/doc/xz-5.2.5
+                --docdir=/usr/share/doc/xz
             make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
@@ -95,7 +95,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --disable-static        \
                 --with-curses           \
-                --docdir=/usr/share/doc/readline-8.1.2
+                --docdir=/usr/share/doc/readline
             make -j_LFS_BUILD_PROC SHLIB_LIBS="-lncursesw" && make SHLIB_LIBS="-lncursesw" install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
@@ -169,8 +169,8 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr \
-                --docdir=/usr/share/doc/flex-2.6.4 \
+            ./configure --prefix=/usr           \
+                --docdir=/usr/share/doc/flex    \
                 --disable-static
             make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then

@@ -25,7 +25,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --disable-static        \
                 --enable-thread-safe    \
-                --docdir=/usr/share/doc/mpfr-4.1.0
+                --docdir=/usr/share/doc/mpfr
             make -j_LFS_BUILD_PROC && make html && make -j_LFS_BUILD_PROC check
             if [ $? = 0 ]; then
                 make install
@@ -51,7 +51,7 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             ./configure --prefix=/usr   \
                 --disable-static        \
-                --docdir=/usr/share/doc/mpc-1.2.1
+                --docdir=/usr/share/doc/mpc
             make -j_LFS_BUILD_PROC && make html && make -j_LFS_BUILD_PROC check
             if [ $? = 0 ]; then
                 make install
@@ -78,7 +78,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --disable-static        \
                 --sysconfdir=/etc       \
-                --docdir=/usr/share/doc/attr-2.5.1
+                --docdir=/usr/share/doc/attr
             make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
@@ -102,7 +102,7 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             ./configure --prefix=/usr   \
                 --disable-static        \
-                --docdir=/usr/share/doc/acl-2.3.1
+                --docdir=/usr/share/doc/acl
             make -j_LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
