@@ -183,6 +183,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/build_3/_BUILD_DONE ]; then
         mkdir -pv $PKG_PATH/build_3
         pushd $PKG_PATH
+            rm -rfv mpfr mpc gmp
             sed -e '/static.*SIGSTKSZ/d' \
                 -e 's/return kAltStackSize/return SIGSTKSZ * 4/' \
                 -i libsanitizer/sanitizer_common/sanitizer_posix_libcdep.cpp
