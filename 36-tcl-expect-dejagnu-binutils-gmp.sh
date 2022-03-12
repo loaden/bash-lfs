@@ -5,6 +5,7 @@ if [ ! -f $LFS/task.sh ]; then
     source `dirname ${BASH_SOURCE[0]}`/lfs.sh
     cp -v ${BASH_SOURCE[0]} $LFS/task.sh
     sed "s/_LFS_VERSION/$(getConf LFS_VERSION)/g" -i $LFS/task.sh
+    sed "s/_LFS_BUILD_PROC/$LFS_BUILD_PROC/g" -i $LFS/task.sh
     source `dirname ${BASH_SOURCE[0]}`/chroot.sh
     rm -fv $LFS/task.sh
     exit
@@ -13,10 +14,10 @@ fi
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
     PKG_NAME=tcl
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --strip-components=1
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME*src.tar.*")
+        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -26,7 +27,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --mandir=/usr/share/man \
             $([ "$(uname -m)" = x86_64 ] && echo --enable-64bit)
-            make -j$LFS_BUILD_PROC
+            make -j_LFS_BUILD_PROC
 
             sed -e "s|$SRCDIR/unix|/usr/lib|" \
                 -e "s|$SRCDIR|/usr/include|"  \
@@ -44,7 +45,7 @@ pushd /sources/_LFS_VERSION
                 -i pkgs/itcl4.2.2/itclConfig.sh
 
             unset SRCDIR
-            make -j$LFS_BUILD_PROC test && make install
+            make -j_LFS_BUILD_PROC test && make install
 
             if [ $? = 0 ]; then
                 chmod -v u+w /usr/lib/libtcl8.6.so
@@ -62,10 +63,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=expect
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME*.tar.*")
+        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -75,7 +76,7 @@ pushd /sources/_LFS_VERSION
                 --enable-shared         \
                 --mandir=/usr/share/man \
                 --with-tclinclude=/usr/include
-            make -j$LFS_BUILD_PROC && make -j$LFS_BUILD_PROC test && make install
+            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test && make install
             if [ $? = 0 ]; then
                 ln -svf expect5.45.4/libexpect5.45.4.so /usr/lib
                 touch _BUILD_DONE
@@ -102,7 +103,7 @@ pushd /sources/_LFS_VERSION
             makeinfo --html --no-split -o doc/dejagnu.html ../doc/dejagnu.texi
             makeinfo --plaintext       -o doc/dejagnu.txt  ../doc/dejagnu.texi
 
-            make -j$LFS_BUILD_PROC install
+            make -j_LFS_BUILD_PROC install
             if [ $? = 0 ]; then
                 install -v -dm755  /usr/share/doc/dejagnu-1.6.3
                 install -v -m644   doc/dejagnu.{html,txt} /usr/share/doc/dejagnu-1.6.3
@@ -137,7 +138,8 @@ pushd /sources/_LFS_VERSION
                 --disable-werror        \
                 --enable-64-bit-bfd     \
                 --with-system-zlib
-            make -j$LFS_BUILD_PROC tooldir=/usr && make -k check && make tooldir=/usr install
+            CUR_MAKE_JOBS=$(echo _LFS_BUILD_PROC - 1 | bc)
+            make -j$CUR_MAKE_JOBS tooldir=/usr && make -j$CUR_MAKE_JOBS -k check && make tooldir=/usr install
             if [ $? = 0 ]; then
                 rm -fv /usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.a
                 touch _BUILD_DONE
@@ -163,7 +165,7 @@ pushd /sources/_LFS_VERSION
                 --enable-cxx            \
                 --disable-static        \
                 --docdir=/usr/share/doc/gmp-6.2.1
-            make -j$LFS_BUILD_PROC && make html && make check 2>&1 | tee gmp-check-log
+            make -j_LFS_BUILD_PROC && make html && make check 2>&1 | tee gmp-check-log
             awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log
             make install
             make install-html
