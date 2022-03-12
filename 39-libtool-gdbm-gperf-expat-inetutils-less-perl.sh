@@ -170,7 +170,7 @@ pushd /sources/_LFS_VERSION
         exit 1
     fi
 
-    if [ ! -f $PKG_PATH/build2/_BUILD_DONE ]; then
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             export BUILD_ZLIB=False
             export BUILD_BZIP2=0
@@ -193,7 +193,7 @@ pushd /sources/_LFS_VERSION
                 unset BUILD_ZLIB BUILD_BZIP2
                 perl Makefile.PL
                 make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test && make install
-                touch build2/_BUILD_DONE
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
