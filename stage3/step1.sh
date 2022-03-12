@@ -2,7 +2,7 @@
 # QQ群：111601117、钉钉群：35948877
 
 # step1
-# stage3开工了，重新构建所有
+# stage3开工了，构建出最终版的GCC
 #
 
 echo -e "\033[31mKILL 33-man-pages-iana-etc.sh ...\033[0m"
