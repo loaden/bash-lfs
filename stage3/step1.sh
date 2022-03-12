@@ -24,7 +24,7 @@ echo DONE
 echo
 
 echo -e "\033[31mKILL 36-tcl-expect-dejagnu-binutils-gmp.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../35-xz-zstd-file-readline-m4-bc-flex.sh
+bash `dirname ${BASH_SOURCE[0]}`/../36-tcl-expect-dejagnu-binutils-gmp.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
