@@ -28,3 +28,9 @@ bash `dirname ${BASH_SOURCE[0]}`/../36-tcl-expect-dejagnu-binutils-gmp.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
+
+echo -e "\033[31mKILL 37-mpfr-mpc-attr-acl-libcap-shadow-gcc.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../37-mpfr-mpc-attr-acl-libcap-shadow-gcc.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
