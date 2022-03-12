@@ -23,7 +23,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             ./configure --prefix=/usr
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 rm -fv /usr/lib/libltdl.a
                 touch _BUILD_DONE
