@@ -35,7 +35,7 @@ pushd /sources/_LFS_VERSION
                 # 测试很重要
                 # 已知失败： io/tst-lchmod misc/tst-ttyname nss/tst-nss-file-hosts-multi
                 make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check
-                read -p 'make check'
+                read -p 'make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check'
                 # 不要抱怨
                 touch /etc/ld.so.conf
                 # 跳过完整性检查

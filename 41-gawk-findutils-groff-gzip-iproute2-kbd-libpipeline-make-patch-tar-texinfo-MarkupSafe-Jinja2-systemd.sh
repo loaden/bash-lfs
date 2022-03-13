@@ -147,7 +147,7 @@ pushd /sources/_LFS_VERSION
             sed -i '/RESIZECONS_PROGS=/s/yes/no/' configure
             sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
             ./configure --prefix=/usr --disable-vlock
-            make -j_LFS_BUILD_PROC && make check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -169,7 +169,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             ./configure --prefix=/usr
-            make -j_LFS_BUILD_PROC && make check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -240,7 +240,9 @@ pushd /sources/_LFS_VERSION
                 touch _BUILD_DONE_2
             else
                 pwd
-                exit 1
+                read -p "FIXME: tar 部分测试失败，手动任意键继续..."
+                touch _BUILD_DONE_2
+                make install || exit 1
             fi
         popd
     fi

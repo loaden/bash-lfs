@@ -165,7 +165,7 @@ pushd /sources/_LFS_VERSION
                 --enable-cxx            \
                 --disable-static        \
                 --docdir=/usr/share/doc/gmp
-            make -j_LFS_BUILD_PROC && make html && make check 2>&1 | tee gmp-check-log
+            make -j_LFS_BUILD_PROC && make html && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check 2>&1 | tee gmp-check-log
             awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log
             make install
             make install-html
