@@ -16,3 +16,9 @@ bash `dirname ${BASH_SOURCE[0]}`/../39-libtool-gdbm-gperf-expat-inetutils-less-p
 [ $? = 0 ] || exit 2
 echo DONE
 echo
+
+echo -e "\033[31mKILL 40-intltool-autoconf-automake-openssl-kmod-libffi-Python-ninja-meson-coreutils-check-diffutils.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../40-intltool-autoconf-automake-openssl-kmod-libffi-Python-ninja-meson-coreutils-check-diffutils.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
