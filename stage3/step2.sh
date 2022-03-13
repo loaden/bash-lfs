@@ -28,3 +28,9 @@ bash `dirname ${BASH_SOURCE[0]}`/../41-gawk-findutils-groff-gzip-iproute2-kbd-li
 [ $? = 0 ] || exit 2
 echo DONE
 echo
+
+echo -e "\033[31mKILL 42-dbus-man-db-procps-ng-util-linux-e2fsprogs.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../42-dbus-man-db-procps-ng-util-linux-e2fsprogs.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
