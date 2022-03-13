@@ -191,8 +191,28 @@ pushd /sources/_LFS_VERSION
             make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test && make install
             if [ $? = 0 ]; then
                 unset BUILD_ZLIB BUILD_BZIP2
-                perl Makefile.PL
-                make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test && make install
+                touch _BUILD_DONE
+            else
+                pwd
+                exit 1
+            fi
+        popd
+    fi
+popd
+
+pushd /sources/_LFS_VERSION
+    PKG_NAME=XML-Parser
+    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
+        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    fi
+
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
+            perl Makefile.PL
+            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test && make install
+            if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
                 pwd
