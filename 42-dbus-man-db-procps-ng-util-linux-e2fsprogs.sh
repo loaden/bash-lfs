@@ -126,8 +126,8 @@ pushd /sources/_LFS_VERSION
                 --disable-static     \
                 --without-python
             make -j_LFS_BUILD_PROC || exit 99
-            chown -Rv tester .
-            su tester -c "make TESTSUITEFLAGS=-j_LFS_BUILD_PROC -k check"
+            # chown -Rv tester .
+            # su tester -c "make TESTSUITEFLAGS=-j_LFS_BUILD_PROC -k check"
             if [ $? = 0 ]; then
                 make install
                 touch _BUILD_DONE_2
