@@ -51,7 +51,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --disable-static        \
                 --enable-libgdbm-compat
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -73,7 +73,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             ./configure --prefix=/usr --docdir=/usr/share/doc/gperf
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -97,7 +97,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --disable-static        \
                 --docdir=/usr/share/doc/expat
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -128,7 +128,7 @@ pushd /sources/_LFS_VERSION
                 --disable-rlogin     \
                 --disable-rsh        \
                 --disable-servers
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 mv -v /usr/{,s}bin/ifconfig
                 touch _BUILD_DONE
@@ -188,7 +188,7 @@ pushd /sources/_LFS_VERSION
                 -Dpager="/usr/bin/less -isR"                 \
                 -Duseshrplib                                 \
                 -Dusethreads
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make install
             if [ $? = 0 ]; then
                 unset BUILD_ZLIB BUILD_BZIP2
                 touch _BUILD_DONE
@@ -211,7 +211,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             perl Makefile.PL
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else

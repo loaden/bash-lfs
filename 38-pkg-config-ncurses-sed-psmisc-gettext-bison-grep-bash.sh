@@ -26,7 +26,7 @@ pushd /sources/_LFS_VERSION
                 --with-internal-glib    \
                 --disable-host-tool     \
                 --docdir=/usr/share/doc/pkg-config
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -96,7 +96,7 @@ pushd /sources/_LFS_VERSION
             make -j_LFS_BUILD_PROC && make html
             if [ $? = 0 ]; then
                 chown -Rv tester .
-                su tester -c "PATH=$PATH make -j_LFS_BUILD_PROC check"
+                su tester -c "PATH=$PATH make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check"
                 make install
                 install -d -m755           /usr/share/doc/sed-4.8
                 install -m644 doc/sed.html /usr/share/doc/sed-4.8
@@ -145,7 +145,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --disable-static        \
                 --docdir=/usr/share/doc/gettext
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 chmod -v 0755 /usr/lib/preloadable_libintl.so
                 touch build_2/_BUILD_DONE
@@ -169,7 +169,7 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.8.2
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch build_2/_BUILD_DONE
             else
@@ -192,7 +192,7 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch build_2/_BUILD_DONE
             else

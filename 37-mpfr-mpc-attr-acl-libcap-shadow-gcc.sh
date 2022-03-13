@@ -26,7 +26,7 @@ pushd /sources/_LFS_VERSION
                 --disable-static        \
                 --enable-thread-safe    \
                 --docdir=/usr/share/doc/mpfr
-            make -j_LFS_BUILD_PROC && make html && make -j_LFS_BUILD_PROC check
+            make -j_LFS_BUILD_PROC && make html && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check
             if [ $? = 0 ]; then
                 make install
                 make install-html
@@ -52,7 +52,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --disable-static        \
                 --docdir=/usr/share/doc/mpc
-            make -j_LFS_BUILD_PROC && make html && make -j_LFS_BUILD_PROC check
+            make -j_LFS_BUILD_PROC && make html && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check
             if [ $? = 0 ]; then
                 make install
                 make install-html
@@ -79,7 +79,7 @@ pushd /sources/_LFS_VERSION
                 --disable-static        \
                 --sysconfdir=/etc       \
                 --docdir=/usr/share/doc/attr
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -125,7 +125,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             sed -i '/install -m.*STA/d' libcap/Makefile
-            make -j_LFS_BUILD_PROC prefix=/usr lib=lib && make -j_LFS_BUILD_PROC test && make prefix=/usr lib=lib install
+            make -j_LFS_BUILD_PROC prefix=/usr lib=lib && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make prefix=/usr lib=lib install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else

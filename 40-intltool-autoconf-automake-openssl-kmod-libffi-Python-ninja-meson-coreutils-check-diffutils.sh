@@ -69,7 +69,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             ./configure --prefix=/usr --docdir=/usr/share/doc/automake
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -95,7 +95,7 @@ pushd /sources/_LFS_VERSION
                 --libdir=lib          \
                 shared                \
                 zlib-dynamic
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test
             if [ $? = 0 ]; then
                 sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
                 make MANSUFFIX=ssl install
@@ -152,7 +152,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr        \
                 --disable-debuginfod         \
                 --enable-libdebuginfod=dummy
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC check
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check
             if [ $? = 0 ]; then
                 make -C libelf install
                 install -vm644 config/libelf.pc /usr/lib/pkgconfig

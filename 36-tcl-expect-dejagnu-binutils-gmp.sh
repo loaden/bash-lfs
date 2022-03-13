@@ -45,7 +45,7 @@ pushd /sources/_LFS_VERSION
                 -i pkgs/itcl4.2.2/itclConfig.sh
 
             unset SRCDIR
-            make -j_LFS_BUILD_PROC test && make install
+            make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make install
 
             if [ $? = 0 ]; then
                 chmod -v u+w /usr/lib/libtcl8.6.so
@@ -76,7 +76,7 @@ pushd /sources/_LFS_VERSION
                 --enable-shared         \
                 --mandir=/usr/share/man \
                 --with-tclinclude=/usr/include
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test && make install
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make install
             if [ $? = 0 ]; then
                 ln -svf expect5.45.4/libexpect5.45.4.so /usr/lib
                 touch _BUILD_DONE
