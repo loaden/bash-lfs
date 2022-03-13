@@ -22,3 +22,9 @@ bash `dirname ${BASH_SOURCE[0]}`/../40-intltool-autoconf-automake-openssl-kmod-l
 [ $? = 0 ] || exit 2
 echo DONE
 echo
+
+echo -e "\033[31mKILL 41-gawk-findutils-groff-gzip-iproute2-kbd-libpipeline-make-patch-tar-texinfo-MarkupSafe-Jinja2-systemd.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../41-gawk-findutils-groff-gzip-iproute2-kbd-libpipeline-make-patch-tar-texinfo-MarkupSafe-Jinja2-systemd.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
