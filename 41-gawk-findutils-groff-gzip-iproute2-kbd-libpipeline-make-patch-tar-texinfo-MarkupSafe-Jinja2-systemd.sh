@@ -354,7 +354,7 @@ pushd /sources/_LFS_VERSION
                 -Ddocdir=/usr/share/doc/systemd-250 \
                 ..
 
-            ninja && ninja install
+            ninja -j_LFS_BUILD_PROC && ninja install
             if [ $? = 0 ]; then
                 tar -xpvf $(find ../.. -maxdepth 1 -type f -name "$PKG_NAME-man-*.tar.*") --strip-components=1 -C /usr/share/man
                 rm -rf /usr/lib/pam.d
