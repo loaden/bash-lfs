@@ -30,19 +30,19 @@ pushd /sources/_LFS_VERSION
                 --with-headers=/usr/include     \
                 libc_cv_slibdir=/usr/lib
             make -j_LFS_BUILD_PROC
-            read -p 'make'
+            read -p 'make -j_LFS_BUILD_PROC 任意键继续...'
             if [ $? = 0 ]; then
                 # 测试很重要
                 # 已知失败： io/tst-lchmod misc/tst-ttyname nss/tst-nss-file-hosts-multi
                 make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check
-                read -p 'make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check'
+                read -p 'make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check 任意键继续...'
                 # 不要抱怨
                 touch /etc/ld.so.conf
                 # 跳过完整性检查
                 sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
                 # 安装
                 make install
-                read -p 'make install'
+                read -p 'make install 任意键继续...'
                 # 改正 ldd 脚本中硬编码的可执行文件加载器路径
                 sed '/RTLDLIST=/s@/usr@@g' -i /usr/bin/ldd
                 # 安装 nscd 的配置文件和运行时目录
@@ -140,7 +140,7 @@ EOF
 # Add an include directory
 include /etc/ld.so.conf.d/*.conf
 EOF
-                read -p 'done'
+                read -p 'done 任意键继续...'
 
                 # 写入完成标志
                 touch _BUILD_DONE
