@@ -35,19 +35,30 @@ find /home/lfs/ -user lfs -type f -name '*' | xargs rm -vf
 
 # 创建启动脚本
 cat > /home/lfs/start.sh <<EOF
+set +h
+umask 022
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+echo "(lfs)LFS=\$LFS"
+echo "(lfs)LC_ALL=\$LC_ALL"
+echo "(lfs)LFS_TGT=\$LFS_TGT"
+echo "(lfs)PATH=\$PATH"
+echo "(lfs)CONFIG_SITE=\$CONFIG_SITE"
 env
 if [ -f /home/lfs/build.sh ]; then
     source /home/lfs/build.sh
 fi
 EOF
 
-# 赋予启动脚本可执行权限
+# 启动脚本权限设置
+chown -v lfs:lfs /home/lfs/start.sh
 chmod u+x /home/lfs/start.sh
 
 # 创建干净的环境变量
 cat > /home/lfs/.bash_profile <<EOF
 LFS_PATH=/usr/bin
-if [ ! -L /bin ]; then LFS_PATH=/bin:\$LFS_PATH; fi
+if [ ! -L /bin ]; then
+    LFS_PATH=/bin:\$LFS_PATH;
+fi
 LFS_PATH=$LFS/tools/bin:\$LFS_PATH
 exec env -i USER=lfs HOME=/home/lfs TERM=$TERM PS1='\u:\w\$ ' \
     LFS=$LFS LC_ALL=POSIX LFS_TGT=$(uname -m)-lfs-linux-gnu PATH=\$LFS_PATH \
@@ -55,5 +66,5 @@ exec env -i USER=lfs HOME=/home/lfs TERM=$TERM PS1='\u:\w\$ ' \
     /bin/bash -c 'set +h && umask 022 && /home/lfs/start.sh'
 EOF
 
-find /home/lfs/ -user root -name '*' | xargs chown -v lfs:lfs
+chown -v lfs:lfs /home/lfs/.bash_profile
 su - lfs

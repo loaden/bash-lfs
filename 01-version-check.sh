@@ -10,6 +10,7 @@ if [ -f /usr/bin/apt ]; then
     apt install texinfo -y
     apt install bc -y
     apt install automake -y
+    apt install wget -y
 fi
 
 if [ -f /usr/bin/pacman ]; then
@@ -19,6 +20,7 @@ if [ -f /usr/bin/pacman ]; then
     pacman -S m4 --noconfirm --needed
     pacman -S make --noconfirm --needed
     pacman -S texinfo --noconfirm --needed
+    pacman -S wget --noconfirm --needed
 fi
 
 # Simple script to list version numbers of critical development tools
