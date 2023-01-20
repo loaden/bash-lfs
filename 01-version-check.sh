@@ -10,7 +10,6 @@ if [ -f /usr/bin/apt ]; then
     apt install texinfo -y
     apt install bc -y
     apt install automake -y
-    apt autopurge -y
 fi
 
 if [ -f /usr/bin/pacman ]; then

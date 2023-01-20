@@ -3,4 +3,4 @@
 
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
-umount -Rv $LFS
+umount -Rlv $LFS

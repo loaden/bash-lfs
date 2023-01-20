@@ -3,7 +3,7 @@
 
 source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
-[ -d $LFS ] || mkdir -pv $LFS && chmod 755 $LFS
+[ -d $LFS ] || mkdir -pv $LFS
 if ! mountpoint -q $LFS; then
     mount -v $(getConf LFS_ROOT_PARTITION) $LFS
     grep $LFS /proc/mounts
