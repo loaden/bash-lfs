@@ -13,6 +13,15 @@ if [ -f /usr/bin/apt ]; then
     apt autopurge -y
 fi
 
+if [ -f /usr/bin/pacman ]; then
+    pacman -S bc --noconfirm --needed
+    pacman -S bison --noconfirm --needed
+    pacman -S gcc --noconfirm --needed
+    pacman -S m4 --noconfirm --needed
+    pacman -S make --noconfirm --needed
+    pacman -S texinfo --noconfirm --needed
+fi
+
 # Simple script to list version numbers of critical development tools
 export LC_ALL=C
 bash --version | head -n1 | cut -d" " -f2-4
