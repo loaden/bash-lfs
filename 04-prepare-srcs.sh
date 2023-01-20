@@ -11,9 +11,18 @@ fi
 
 # 配置LFS用户编译任务
 if [ "$USER" != "lfs" ]; then
-    echo "$LFS_PROJECT/`basename ${BASH_SOURCE[0]}`" > /home/lfs/build.sh
+    cp "$LFS_PROJECT/`basename ${BASH_SOURCE[0]}`" /home/lfs/build.sh
+    cp "$LFS_PROJECT/lfs.sh" /home/lfs/
+    cp "$LFS_PROJECT/lfs.conf" /home/lfs/
     chown lfs:lfs /home/lfs/build.sh
+    chown lfs:lfs /home/lfs/lfs.sh
+    chown lfs:lfs /home/lfs/lfs.conf
+    [ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.NOUSE
     su - lfs
+    [ ! -e /etc/bash.bashrc.NOUSE ] || mv -v /etc/bash.bashrc.NOUSE /etc/bash.bashrc
+    rm -f /home/lfs/build.sh
+    rm -f /home/lfs/lfs.sh
+    rm -f /home/lfs/lfs.conf
     exit
 fi
 
@@ -21,6 +30,8 @@ fi
 if [ ! -f $LFS/sources/DONE ]; then
     wget http://mirrors.ustc.edu.cn/lfs/lfs-packages/lfs-packages-$(getConf LFS_VERSION).tar --continue --directory-prefix=$LFS/sources
     tar -xf $LFS/sources/lfs-packages-$(getConf LFS_VERSION).tar --directory $LFS/sources
+    # FIXME: 11.2-rc1 bug
+    mv $LFS/sources/11.2-rc1 $LFS/sources/11.2
     pushd $LFS/sources/$(getConf LFS_VERSION)
         md5sum -c md5sums
         [ $? = 0 ] && touch $LFS/sources/DONE
