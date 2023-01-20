@@ -41,6 +41,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 --with-sysroot=$LFS             \
                 --target=$LFS_TGT               \
                 --disable-nls                   \
+                --enable-gprofng=no             \
                 --disable-werror
             make -j$LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
