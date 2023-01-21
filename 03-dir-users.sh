@@ -24,11 +24,13 @@ if [ $? != 0 ]; then
     groupadd lfs
     useradd -s /bin/bash -g lfs -m -k /dev/null lfs
     echo lfs:lfs | chpasswd
-    chown -v lfs $LFS/{usr{,/*},lib,var,etc,bin,sbin,tools}
-    case $(uname -m) in
-        x86_64) chown -v lfs $LFS/lib64 ;;
-    esac
 fi
+
+# 设置lfs用户可写权限
+chown -v lfs $LFS/{usr{,/*},lib,var,etc,bin,sbin,tools}
+case $(uname -m) in
+    x86_64) chown -v lfs $LFS/lib64 ;;
+esac
 
 # 先彻底删除
 find /home/lfs/ -user lfs -type f -name '*' | xargs rm -vf
