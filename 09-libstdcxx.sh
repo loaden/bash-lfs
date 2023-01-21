@@ -38,9 +38,11 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 --disable-multilib              \
                 --disable-nls                   \
                 --disable-libstdcxx-pch         \
-                --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/$(getConf LFS_GCC_VERSION)
+                --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/12.2.0
             make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
             if [ $? = 0 ]; then
+                # 移除对交叉编译有害的 libtool 档案文件
+                rm -v $LFS/usr/lib/lib{stdc++,stdc++fs,supc++}.la
                 touch _BUILD_DONE
             else
                 pwd
