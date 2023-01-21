@@ -23,10 +23,10 @@ fi
 # 来自lfs用户的调用
 pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=glibc
-    PKG_PATH=$(find stage2 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage1 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage2
-        PKG_PATH=$(find stage2 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage1
+        PKG_PATH=$(find stage1 -maxdepth 1 -type d -name "$PKG_NAME-*")
         pushd $PKG_PATH
             find ../.. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
             [ $? != 0 ] && exit 1

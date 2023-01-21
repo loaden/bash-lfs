@@ -22,3 +22,15 @@ bash `dirname ${BASH_SOURCE[0]}`/../07-linux-api.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
+
+echo -e "\033[31mKILL 08-glibc.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../08-glibc.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL 09-libstdcxx.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../09-libstdcxx.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo

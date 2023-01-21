@@ -24,8 +24,27 @@ fi
 pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=gcc
     PKG_PATH=$(find stage2 -maxdepth 1 -type d -name "$PKG_NAME-*")
+
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage2
+        PKG_PATH=$(find stage2 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        pushd $PKG_PATH
+            tar -xpvf $(find ../.. -maxdepth 1 -type f -name mpfr-*.tar.*)
+            mv -v $(find . -maxdepth 1 -type d -name "mpfr-*") mpfr
+            tar -xpvf $(find ../.. -maxdepth 1 -type f -name gmp-*.tar.*)
+            mv -v $(find . -maxdepth 1 -type d -name "gmp-*") gmp
+            tar -xpvf $(find ../.. -maxdepth 1 -type f -name mpc-*.tar.*)
+            mv -v $(find . -maxdepth 1 -type d -name "mpc-*") mpc
+            case $(uname -m) in
+                x86_64)
+                    sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+                ;;
+            esac
+            echo "---确认---"
+            diff gcc/config/i386/t-linux64.orig gcc/config/i386/t-linux64
+            echo "------"
+            sleep 5
+        popd
     fi
 
     if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
