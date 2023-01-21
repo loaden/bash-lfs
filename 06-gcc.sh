@@ -72,14 +72,15 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 --enable-languages=c,c++
             make -j$LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
-                cd ..
-                cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
-                    `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
-                echo "---确认---"
-                ls -lh `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
-                head -10 `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
-                echo "------"
-                sleep 5
+                pushd ..
+                    cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+                        `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
+                    echo "---确认---"
+                    ls -lh `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
+                    head -10 `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
+                    echo "------"
+                    sleep 5
+                popd
                 touch _BUILD_DONE
             else
                 pwd
