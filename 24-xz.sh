@@ -31,12 +31,12 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr             \
-                --host=$LFS_TGT                   \
-                --build=$(build-aux/config.guess) \
-                --disable-static                  \
-                --docdir=/usr/share/doc/xz
-            make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
+            ./configure --prefix=/usr         \
+            --host=$LFS_TGT                   \
+            --build=$(build-aux/config.guess) \
+            --disable-static                  \
+            --docdir=/usr/share/doc/xz-5.2.6
+            make && make DESTDIR=$LFS install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else

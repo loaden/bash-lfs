@@ -33,7 +33,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         pushd $PKG_PATH
             ./configure --prefix=/usr   \
                 --host=$LFS_TGT
-            make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
+            make && make DESTDIR=$LFS install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else

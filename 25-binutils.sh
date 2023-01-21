@@ -24,25 +24,49 @@ fi
 pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=binutils
     PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        exit 1
+
+    # 备份第一遍编译目录，尝试恢复第二遍编译目录
+    if [[ -d $PKG_PATH && ! -d 1-`basename $PKG_PATH` ]]; then
+        mv -v $PKG_PATH 1-`basename $PKG_PATH`
+        if [ -d 2-`basename $PKG_PATH` ]; then
+            mv -v 2-`basename $PKG_PATH` $PKG_PATH
+        else
+            unset PKG_PATH
+        fi
     fi
 
-    if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
+        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
         pushd $PKG_PATH
+            find .. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
+            [ $? != 0 ] && exit 1
+        popd
+    fi
+
+    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
+        pushd $PKG_PATH
+            [ -f ltmain.sh.bak ] || cp ltmain.sh ltmain.sh.bak
             sed '6009s/$add_dir//' -i ltmain.sh
-            mkdir build_2
-            pushd build_2
+            echo "---确认---"
+            diff ltmain.sh.bak ltmain.sh
+            echo "------"
+            sleep 5
+            mkdir build
+            pushd build
                 ../configure                   \
                     --prefix=/usr              \
                     --build=$(../config.guess) \
                     --host=$LFS_TGT            \
                     --disable-nls              \
                     --enable-shared            \
+                    --enable-gprofng=no        \
                     --disable-werror           \
                     --enable-64-bit-bfd
                 make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
                 if [ $? = 0 ]; then
+                    # 移除对交叉编译有害的 libtool 档案文件，同时移除不必要的静态库
+                    rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.{a,la}
                     touch _BUILD_DONE
                 else
                     exit 1

@@ -31,9 +31,9 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr           \
+            ./configure --prefix=/usr   \
                 --localstatedir=/var/lib/locate \
-                --host=$LFS_TGT                 \
+                --host=$LFS_TGT \
                 --build=$(build-aux/config.guess)
             make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
             if [ $? = 0 ]; then

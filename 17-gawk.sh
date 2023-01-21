@@ -31,10 +31,12 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
+            # 确保不要安装一些没有必要的文件
             sed -i 's/extras//' Makefile.in
+            # 编译
             ./configure --prefix=/usr   \
-            --host=$LFS_TGT             \
-            --build=$(build-aux/config.guess)
+                --host=$LFS_TGT \
+                --build=$(build-aux/config.guess)
             make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
