@@ -1,23 +1,45 @@
 #!/bin/bash
 # QQ群：111601117、钉钉群：35948877
 
-if [ ! -f $LFS/task.sh ]; then
+# 避免chroot后执行
+id lfs >/dev/null 2>&1
+if [ $? = 0 ]; then
     source `dirname ${BASH_SOURCE[0]}`/lfs.sh
+
+    # 创建挂载目录
+    mkdir -pv $LFS/{dev,proc,sys,run}
+
+    # 清理lfs用户配置
+    find /home/lfs/ -user lfs -type f -name '*' | xargs rm -vf
+
+    # 备份
+    if [ ! -f $LFS/sources/lfs.tar.gz ]; then
+        pushd $LFS
+            tar --exclude=proc --exclude=sys --exclude=dev --exclude=run --exclude=boot \
+                --exclude=home --exclude=sources --one-file-system \
+                -capvf $LFS/sources/lfs.tar.gz --directory=$LFS *
+        popd
+    fi
+
+    # 恢复文件所有者为root老大
+    chown -R root:root $LFS/{usr,lib,var,etc,bin,sbin,tools}
+    case $(uname -m) in
+        x86_64) chown -R root:root $LFS/lib64 ;;
+    esac
+
+    # 准备chroot
     cp -v ${BASH_SOURCE[0]} $LFS/task.sh
-    sed "s/_LFS_VERSION/$(getConf LFS_VERSION)/g" -i $LFS/task.sh
     source `dirname ${BASH_SOURCE[0]}`/chroot.sh
     rm -fv $LFS/task.sh
     exit
 fi
 
-# 来自chroot之后的调用
-[ -f /_INIT_CHROOT_DONE ] && exit
 
-# 恢复文件所有者为root老大
-chown -R root:root /{usr,lib,var,etc,bin,sbin,tools}
-case $(uname -m) in
-    x86_64) chown -R root:root /lib64 ;;
-esac
+#
+# 以下内容chroot之后才执行
+#
+
+[ -f /_INIT_CHROOT_DONE ] && exit
 
 # 创建目录
 mkdir -pv /{boot,home,mnt,opt,srv}
@@ -47,7 +69,6 @@ cat > /etc/hosts << EOF
 ::1        localhost
 EOF
 
-# 创建 /etc/passwd 文件
 cat > /etc/passwd << "EOF"
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/dev/null:/usr/bin/false
@@ -62,10 +83,9 @@ systemd-timesync:x:78:78:systemd Time Synchronization:/:/usr/bin/false
 systemd-coredump:x:79:79:systemd Core Dumper:/:/usr/bin/false
 uuidd:x:80:80:UUID Generation Daemon User:/dev/null:/usr/bin/false
 systemd-oom:x:81:81:systemd Out Of Memory Daemon:/:/usr/bin/false
-nobody:x:99:99:Unprivileged User:/dev/null:/usr/bin/false
+nobody:x:65534:65534:Unprivileged User:/dev/null:/usr/bin/false
 EOF
 
-# 创建 /etc/group 文件
 cat > /etc/group << "EOF"
 root:x:0:
 bin:x:1:daemon
@@ -99,8 +119,8 @@ systemd-coredump:x:79:
 uuidd:x:80:
 systemd-oom:x:81:
 wheel:x:97:
-nogroup:x:99:
 users:x:999:
+nogroup:x:65534:
 EOF
 
 # 创建测试用户
@@ -117,5 +137,9 @@ chgrp -v utmp /var/log/lastlog
 chmod -v 664  /var/log/lastlog
 chmod -v 600  /var/log/btmp
 
-# 完成CHROOT环境初始化
+# 查看配置效果
+ls -lh
+env
+
+# 设置初始化标记
 touch /_INIT_CHROOT_DONE
