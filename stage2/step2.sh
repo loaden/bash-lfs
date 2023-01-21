@@ -16,9 +16,3 @@ bash `dirname ${BASH_SOURCE[0]}`/../26-gcc.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
-
-echo -e "\033[31mKILL 27-prepare-chroot.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../27-init-chroot.sh
-[ $? = 0 ] || exit 2
-echo DONE
-echo

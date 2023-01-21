@@ -13,52 +13,6 @@ fi
 
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
-    PKG_NAME=xz
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
-        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    fi
-
-    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
-        pushd $PKG_PATH
-            ./configure --prefix=/usr   \
-                --disable-static        \
-                --docdir=/usr/share/doc/xz
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
-            if [ $? = 0 ]; then
-                touch _BUILD_DONE
-            else
-                pwd
-                exit 1
-            fi
-        popd
-    fi
-popd
-
-pushd /sources/_LFS_VERSION
-    PKG_NAME=zstd
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
-        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    fi
-
-    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
-        pushd $PKG_PATH
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make prefix=/usr install
-            if [ $? = 0 ]; then
-                rm -v /usr/lib/libzstd.a
-                touch _BUILD_DONE
-            else
-                pwd
-                exit 1
-            fi
-        popd
-    fi
-popd
-
-pushd /sources/_LFS_VERSION
     PKG_NAME=file
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
@@ -149,32 +103,6 @@ pushd /sources/_LFS_VERSION
             CC=gcc ./configure --prefix=/usr -G -O3
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make install
             if [ $? = 0 ]; then
-                touch _BUILD_DONE
-            else
-                pwd
-                exit 1
-            fi
-        popd
-    fi
-popd
-
-
-pushd /sources/_LFS_VERSION
-    PKG_NAME=flex
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
-        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    fi
-
-    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
-        pushd $PKG_PATH
-            ./configure --prefix=/usr           \
-                --docdir=/usr/share/doc/flex    \
-                --disable-static
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
-            if [ $? = 0 ]; then
-                ln -sv flex /usr/bin/lex
                 touch _BUILD_DONE
             else
                 pwd

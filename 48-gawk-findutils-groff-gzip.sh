@@ -13,7 +13,7 @@ fi
 
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
-    PKG_NAME=make
+    PKG_NAME=gawk
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
@@ -22,6 +22,7 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
         pushd $PKG_PATH
             make distclean
+            sed -i 's/extras//' Makefile.in
             ./configure --prefix=/usr
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
@@ -35,7 +36,7 @@ pushd /sources/_LFS_VERSION
 popd
 
 pushd /sources/_LFS_VERSION
-    PKG_NAME=patch
+    PKG_NAME=findutils
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
@@ -44,9 +45,15 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
         pushd $PKG_PATH
             make distclean
-            ./configure --prefix=/usr
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
+            case $(uname -m) in
+                i?86)   TIME_T_32_BIT_OK=yes ./configure --prefix=/usr --localstatedir=/var/lib/locate ;;
+                x86_64) ./configure --prefix=/usr --localstatedir=/var/lib/locate ;;
+            esac
+            make -j_LFS_BUILD_PROC || exit 99
+            chown -Rv tester .
+            su tester -c "PATH=$PATH make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check"
             if [ $? = 0 ]; then
+                make install
                 touch _BUILD_DONE_2
             else
                 pwd
@@ -57,56 +64,7 @@ pushd /sources/_LFS_VERSION
 popd
 
 pushd /sources/_LFS_VERSION
-    PKG_NAME=tar
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        exit 1
-    fi
-
-    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
-        pushd $PKG_PATH
-            make distclean
-            FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
-            if [ $? = 0 ]; then
-                touch _BUILD_DONE_2
-            else
-                pwd
-                read -p "FIXME: tar 部分测试失败，手动任意键继续..."
-                touch _BUILD_DONE_2
-                make install || exit 1
-            fi
-        popd
-    fi
-popd
-
-pushd /sources/_LFS_VERSION
-    PKG_NAME=texinfo
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        exit 1
-    fi
-
-    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
-        pushd $PKG_PATH
-            make distclean
-            ./configure --prefix=/usr
-            sed -e 's/__attribute_nonnull__/__nonnull/' \
-                -i gnulib/lib/malloc/dynarray-skeleton.c
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
-            if [ $? = 0 ]; then
-                make TEXMF=/usr/share/texmf install-tex
-                touch _BUILD_DONE_2
-            else
-                pwd
-                exit 1
-            fi
-        popd
-    fi
-popd
-
-pushd /sources/_LFS_VERSION
-    PKG_NAME=MarkupSafe
+    PKG_NAME=groff
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
@@ -115,8 +73,8 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            python3 setup.py build
-            python3 setup.py install --optimize=1
+            PAGE=A4 ./configure --prefix=/usr
+            make -j1 && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -128,18 +86,19 @@ pushd /sources/_LFS_VERSION
 popd
 
 pushd /sources/_LFS_VERSION
-    PKG_NAME=Jinja2
+    PKG_NAME=gzip
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
-        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        exit 1
     fi
 
-    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
         pushd $PKG_PATH
-            python3 setup.py install --optimize=1
+            make distclean
+            ./configure --prefix=/usr
+            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
-                touch _BUILD_DONE
+                touch _BUILD_DONE_2
             else
                 pwd
                 exit 1

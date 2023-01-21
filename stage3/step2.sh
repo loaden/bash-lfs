@@ -2,35 +2,83 @@
 # QQ群：111601117、钉钉群：35948877
 
 # step2
-# stage3开工了，构建其他基础工具
+# 构建出最终版的GCC
 #
 
-echo -e "\033[31mKILL 38-pkg-config-ncurses-sed-psmisc-gettext-bison-grep-bash.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../38-pkg-config-ncurses-sed-psmisc-gettext-bison-grep-bash.sh
+echo -e "\033[31mKILL 33-man-pages-iana-etc.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../33-man-pages-iana-etc.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 39-libtool-gdbm-gperf-expat-inetutils-less-perl.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../39-libtool-gdbm-gperf-expat-inetutils-less-perl.sh
+echo -e "\033[31mKILL 34-glibc-zlib-bzip2-xz-zstd.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../34-glibc-zlib-bzip2-xz-zstd.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 40-intltool-autoconf-automake-openssl-kmod-libffi-Python-ninja-meson-coreutils-check-diffutils.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../40-intltool-autoconf-automake-openssl-kmod-libffi-Python-ninja-meson-coreutils-check-diffutils.sh
+echo -e "\033[31mKILL 35-file-readline-m4-bc.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../35-file-readline-m4-bc.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 41-gawk-findutils-groff-gzip-iproute2-kbd-libpipeline-make-patch-tar-texinfo-MarkupSafe-Jinja2-systemd.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../41-gawk-findutils-groff-gzip-iproute2-kbd-libpipeline-make-patch-tar-texinfo-MarkupSafe-Jinja2-systemd.sh
+echo -e "\033[31mKILL 36-flex-tcl-expect-dejagnu.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../36-flex-tcl-expect-dejagnu.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 42-dbus-man-db-procps-ng-util-linux-e2fsprogs.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../42-dbus-man-db-procps-ng-util-linux-e2fsprogs.sh
+echo -e "\033[31mKILL 37-binutils-gmp-mpfr-mpc.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../37-binutils-gmp-mpfr-mpc.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL 38-attr-acl-libcap-shadow.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../38-attr-acl-libcap-shadow.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL 39-gcc.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../39-gcc.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL 40-libtool-gdbm-gperf-expat.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../40-libtool-gdbm-gperf-expat.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL expat.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL expat.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL expat.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL expat.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL expat.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
