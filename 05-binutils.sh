@@ -36,12 +36,11 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
     if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
         mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH/build
-            ../configure                        \
-                --prefix=$LFS/tools             \
-                --with-sysroot=$LFS             \
-                --target=$LFS_TGT               \
-                --disable-nls                   \
-                --enable-gprofng=no             \
+            ../configure --prefix=$LFS/tools \
+                --with-sysroot=$LFS \
+                --target=$LFS_TGT   \
+                --disable-nls       \
+                --enable-gprofng=no \
                 --disable-werror
             make -j$LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then

@@ -40,37 +40,45 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                         -i.orig gcc/config/i386/t-linux64
                         ;;
             esac
+            echo "---确认---"
+            diff gcc/config/i386/t-linux64.orig gcc/config/i386/t-linux64
+            echo "------"
+            sleep 5
         popd
     fi
 
     if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
         mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH/build
-            ../configure                                            \
-                --target=$LFS_TGT                                   \
-                --prefix=$LFS/tools                                 \
-                --with-glibc-version=$(getConf LFS_GLIBC_VERSION)   \
-                --with-sysroot=$LFS                                 \
-                --with-newlib                                       \
-                --without-headers                                   \
-                --enable-initfini-array                             \
-                --disable-nls                                       \
-                --disable-shared                                    \
-                --disable-multilib                                  \
-                --disable-decimal-float                             \
-                --disable-threads                                   \
-                --disable-libatomic                                 \
-                --disable-libgomp                                   \
-                --disable-libquadmath                               \
-                --disable-libssp                                    \
-                --disable-libvtv                                    \
-                --disable-libstdcxx                                 \
+            ../configure                  \
+                --target=$LFS_TGT         \
+                --prefix=$LFS/tools       \
+                --with-glibc-version=2.36 \
+                --with-sysroot=$LFS       \
+                --with-newlib             \
+                --without-headers         \
+                --disable-nls             \
+                --disable-shared          \
+                --disable-multilib        \
+                --disable-decimal-float   \
+                --disable-threads         \
+                --disable-libatomic       \
+                --disable-libgomp         \
+                --disable-libquadmath     \
+                --disable-libssp          \
+                --disable-libvtv          \
+                --disable-libstdcxx       \
                 --enable-languages=c,c++
             make -j$LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
-                cat ../gcc/limitx.h ../gcc/glimits.h ../gcc/limity.h \
-                    > `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
+                cd ..
+                cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+                    `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
+                echo "---确认---"
                 ls -lh `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
+                head -10 `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
+                echo "------"
+                sleep 5
                 touch _BUILD_DONE
             else
                 pwd
