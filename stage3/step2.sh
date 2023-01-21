@@ -53,32 +53,38 @@ bash `dirname ${BASH_SOURCE[0]}`/../40-libtool-gdbm-gperf-expat.sh
 echo DONE
 echo
 
-echo -e "\033[31mKILL expat.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
+echo -e "\033[31mKILL 41-inetutils-less-perl-XML-Parser.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../41-inetutils-less-perl-XML-Parser.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL expat.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
+echo -e "\033[31mKILL 42-pkg-config-ncurses-sed-psmisc.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../42-pkg-config-ncurses-sed-psmisc.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL expat.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
+echo -e "\033[31mKILL 43-gettext-bison-grep-bash.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../43-gettext-bison-grep-bash.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL expat.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
+echo -e "\033[31mKILL 44-intltool-autoconf-automake.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../44-intltool-autoconf-automake.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL expat.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../expat.sh
+echo -e "\033[31mKILL 45-openssl-kmod-elfutils.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../45-openssl-kmod-elfutils.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL 46-libffi-Python-ninja-meson.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../46-libffi-Python-ninja-meson.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo

@@ -5,32 +5,50 @@
 # 构建其他基础工具
 #
 
-echo -e "\033[31mKILL 38-pkg-config-ncurses-sed-psmisc-gettext-bison-grep-bash.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../38-pkg-config-ncurses-sed-psmisc-gettext-bison-grep-bash.sh
+echo -e "\033[31mKILL 47-coreutils-check-diffutils.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../47-coreutils-check-diffutils.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 39-libtool-gdbm-gperf-expat-inetutils-less-perl.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../39-libtool-gdbm-gperf-expat-inetutils-less-perl.sh
+echo -e "\033[31mKILL 48-gawk-findutils-groff-gzip.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../48-gawk-findutils-groff-gzip.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 40-intltool-autoconf-automake-openssl-kmod-libffi-Python-ninja-meson-coreutils-check-diffutils.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../40-intltool-autoconf-automake-openssl-kmod-libffi-Python-ninja-meson-coreutils-check-diffutils.sh
+echo -e "\033[31mKILL 49-iproute2-kbd-libpipeline.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../49-iproute2-kbd-libpipeline.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 41-gawk-findutils-groff-gzip-iproute2-kbd-libpipeline-make-patch-tar-texinfo-MarkupSafe-Jinja2-systemd.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../41-gawk-findutils-groff-gzip-iproute2-kbd-libpipeline-make-patch-tar-texinfo-MarkupSafe-Jinja2-systemd.sh
+echo -e "\033[31mKILL 50-make-patch-tar-texinfo.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../50-make-patch-tar-texinfo.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 42-dbus-man-db-procps-ng-util-linux-e2fsprogs.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../42-dbus-man-db-procps-ng-util-linux-e2fsprogs.sh
+echo -e "\033[31mKILL 51-MarkupSafe-Jinja2.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../51-MarkupSafe-Jinja2.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL 52-systemd.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../52-systemd.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL 53-dbus-man-db-procps.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../53-dbus-man-db-procps.sh
+[ $? = 0 ] || exit 2
+echo DONE
+echo
+
+echo -e "\033[31mKILL 54-util-linux-e2fsprogs.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../54-util-linux-e2fsprogs.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
