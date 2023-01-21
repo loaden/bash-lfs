@@ -28,6 +28,7 @@ pushd /sources/_LFS_VERSION
             make -j_LFS_BUILD_PROC
             if [ $? = 0 ]; then
                 cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
+                sleep 5
                 touch _BUILD_DONE
             else
                 pwd
@@ -47,8 +48,8 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr   \
-                --docdir=/usr/share/doc/bison
+            ./configure --prefix=/usr \
+                --docdir=/usr/share/doc/bison-3.8.2
             make -j_LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
