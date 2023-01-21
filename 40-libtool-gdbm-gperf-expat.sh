@@ -1,7 +1,9 @@
 #!/bin/bash
 # QQ群：111601117、钉钉群：35948877
 
-if [ ! -f $LFS/task.sh ]; then
+# 避免chroot后执行
+id lfs >/dev/null 2>&1
+if [ $? = 0 ]; then
     source `dirname ${BASH_SOURCE[0]}`/lfs.sh
     cp -v ${BASH_SOURCE[0]} $LFS/task.sh
     sed "s/_LFS_VERSION/$(getConf LFS_VERSION)/g" -i $LFS/task.sh
