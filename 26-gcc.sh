@@ -40,8 +40,14 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                     sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
                 ;;
             esac
+            cp -v libgcc/Makefile.in libgcc/Makefile.in.bak
+            cp -v libstdc++-v3/include/Makefile.in libstdc++-v3/include/Makefile.in.bak
+            sed '/thread_header =/s/@.*@/gthr-posix.h/' \
+                -i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
             echo "---确认---"
             diff gcc/config/i386/t-linux64.orig gcc/config/i386/t-linux64
+            diff libstdc++-v3/include/Makefile.in.bak libstdc++-v3/include/Makefile.in
+            diff libstdc++-v3/include/Makefile.in.bak libstdc++-v3/include/Makefile.in
             echo "------"
             sleep 5
         popd
@@ -49,8 +55,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            sed '/thread_header =/s/@.*@/gthr-posix.h/' \
-                -i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
             mkdir build
             pushd build
                 ../configure                                       \
