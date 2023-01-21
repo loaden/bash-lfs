@@ -36,10 +36,10 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
             tar -xpvf $(find ../.. -maxdepth 1 -type f -name mpc-*.tar.*)
             mv -v $(find . -maxdepth 1 -type d -name "mpc-*") mpc
             case $(uname -m) in
-                 x86_64)
+                x86_64)
                     sed -e '/m64=/s/lib64/lib/' \
                         -i.orig gcc/config/i386/t-linux64
-                        ;;
+                ;;
             esac
             echo "---确认---"
             diff gcc/config/i386/t-linux64.orig gcc/config/i386/t-linux64

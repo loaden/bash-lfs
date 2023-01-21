@@ -24,33 +24,22 @@ fi
 pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=gcc
     PKG_PATH=$(find stage2 -maxdepth 1 -type d -name "$PKG_NAME-*")
-
-    # 备份第一遍编译目录，尝试恢复第二遍编译目录
-    if [[ -d $PKG_PATH && ! -d 1-`basename $PKG_PATH` ]]; then
-        mv -v $PKG_PATH 1-`basename $PKG_PATH`
-        if [ -d 2-`basename $PKG_PATH` ]; then
-            mv -v 2-`basename $PKG_PATH` $PKG_PATH
-        else
-            unset PKG_PATH
-        fi
+    if [ -z $PKG_PATH ]; then
+        exit 1
     fi
 
     if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            case $(uname -m) in
-                x86_64)
-                    sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
-                    ;;
-            esac
+            sed '/thread_header =/s/@.*@/gthr-posix.h/' \
+                -i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
             mkdir build
             pushd build
-                mkdir -pv $LFS_TGT/libgcc
-                ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
                 ../configure                                       \
                     --build=$(../config.guess)                     \
                     --host=$LFS_TGT                                \
+                    --target=$LFS_TGT                              \
+                    LDFLAGS_FOR_TARGET=-L$PWD/$LFS_TGT/libgcc      \
                     --prefix=/usr                                  \
-                    CC_FOR_TARGET=$LFS_TGT-gcc                     \
                     --with-build-sysroot=$LFS                      \
                     --enable-initfini-array                        \
                     --disable-nls                                  \
@@ -61,7 +50,6 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                     --disable-libquadmath                          \
                     --disable-libssp                               \
                     --disable-libvtv                               \
-                    --disable-libstdcxx                            \
                     --enable-languages=c,c++
                 make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
                 if [ $? = 0 ]; then
