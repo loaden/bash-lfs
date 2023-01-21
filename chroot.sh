@@ -25,8 +25,8 @@ chroot "$LFS" /usr/bin/env -i   \
 
 # 卸载虚拟内核文件系统
 sleep 1
-umount -Rl $LFS/dev
-umount -Rl $LFS/proc
-umount -Rl $LFS/sys
-umount -Rl $LFS/run
+umount -Rlv $LFS/dev
+umount -Rlv $LFS/proc
+umount -Rlv $LFS/sys
+umount -Rlv $LFS/run
 sleep 1
