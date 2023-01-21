@@ -14,7 +14,7 @@ fi
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
     PKG_NAME=binutils
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi

@@ -14,10 +14,10 @@ fi
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
     PKG_NAME=libffi
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -39,7 +39,7 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=Python
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi
@@ -67,10 +67,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=ninja
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -92,10 +92,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=meson
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -117,7 +117,7 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=coreutils
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi
@@ -151,10 +151,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=check
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -173,7 +173,7 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=diffutils
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi

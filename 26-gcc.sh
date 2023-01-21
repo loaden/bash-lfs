@@ -23,20 +23,27 @@ fi
 # 来自lfs用户的调用
 pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=gcc
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        exit 1
+    PKG_PATH=$(find stage2 -maxdepth 1 -type d -name "$PKG_NAME-*")
+
+    # 备份第一遍编译目录，尝试恢复第二遍编译目录
+    if [[ -d $PKG_PATH && ! -d 1-`basename $PKG_PATH` ]]; then
+        mv -v $PKG_PATH 1-`basename $PKG_PATH`
+        if [ -d 2-`basename $PKG_PATH` ]; then
+            mv -v 2-`basename $PKG_PATH` $PKG_PATH
+        else
+            unset PKG_PATH
+        fi
     fi
 
-    if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
+    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
         pushd $PKG_PATH
             case $(uname -m) in
                 x86_64)
                     sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
                     ;;
             esac
-            mkdir build_2
-            pushd build_2
+            mkdir build
+            pushd build
                 mkdir -pv $LFS_TGT/libgcc
                 ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
                 ../configure                                       \

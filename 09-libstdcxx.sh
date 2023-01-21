@@ -23,7 +23,7 @@ fi
 # 来自lfs用户的调用
 pushd $LFS/sources/$(getConf LFS_VERSION)
     PKG_NAME=gcc
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage2 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi

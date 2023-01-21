@@ -14,10 +14,10 @@ fi
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
     PKG_NAME=pkg-config
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -39,10 +39,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=ncurses
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -83,7 +83,7 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=sed
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi
@@ -111,10 +111,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=psmisc
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -133,7 +133,7 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=gettext
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi
@@ -159,7 +159,7 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=bison
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi
@@ -182,7 +182,7 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=grep
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi
@@ -206,7 +206,7 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=bash
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         exit 1
     fi

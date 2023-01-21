@@ -14,12 +14,12 @@ fi
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
     PKG_NAME=systemd
-    PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.gz")
-        PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
         pushd $PKG_PATH
-            find .. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
+            find ../.. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
             [ $? = 0 ] || exit 1
         popd
     fi
