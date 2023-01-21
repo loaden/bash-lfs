@@ -28,7 +28,10 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*")
         PKG_PATH=$(find . -maxdepth 1 -type d -name "$PKG_NAME-*")
         pushd $PKG_PATH
-            find .. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
+            # LFS 文档没有应用补丁 coreutils-9.1-i18n-1.patch
+            # 但8.54小节chroot后再次编译时，又应用了这个补丁
+            # 可能是 i18n 补丁在当前阶段不应用更安全？
+            # find .. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
             [ $? != 0 ] && exit 1
         popd
     fi
@@ -42,6 +45,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
                 --enable-no-install-program=kill,uptime
             make -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
             if [ $? = 0 ]; then
+                # 将程序移动到它们最终安装时的正确位置
                 mv -v $LFS/usr/bin/chroot              $LFS/usr/sbin
                 mkdir -pv $LFS/usr/share/man/man8
                 mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8

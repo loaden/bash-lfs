@@ -31,24 +31,29 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
+            # 保证在配置时优先查找 gawk 命令
             sed -i s/mawk// configure
+            # 在宿主系统构建“tic”程序
             mkdir build
             pushd build
                 ../configure
                 make -C include
                 make -C progs tic
             popd
-            ./configure --prefix=/usr                \
-                        --host=$LFS_TGT              \
-                        --build=$(./config.guess)    \
-                        --mandir=/usr/share/man      \
-                        --with-manpage-format=normal \
-                        --with-shared                \
-                        --without-debug              \
-                        --without-ada                \
-                        --without-normal             \
-                        --disable-stripping          \
-                        --enable-widec
+            sleep 5
+            # 编译
+            ./configure --prefix=/usr        \
+                --host=$LFS_TGT              \
+                --build=$(./config.guess)    \
+                --mandir=/usr/share/man      \
+                --with-manpage-format=normal \
+                --with-shared                \
+                --without-normal             \
+                --with-cxx-shared            \
+                --without-debug              \
+                --without-ada                \
+                --disable-stripping          \
+                --enable-widec
             make -j$LFS_BUILD_PROC && make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install
             if [ $? = 0 ]; then
                 echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so

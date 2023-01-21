@@ -46,7 +46,7 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
             # 确保将 ldconfig 和 sln 工具安装到 /usr/sbin 目录中
             echo "rootsbindir=/usr/sbin" > configparms
-            ../configure                             \
+            ../configure                           \
                 --prefix=/usr                      \
                 --host=$LFS_TGT                    \
                 --build=$(../scripts/config.guess) \

@@ -31,17 +31,22 @@ pushd $LFS/sources/$(getConf LFS_VERSION)
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
+            # 宿主系统 file 命令的版本必须和正在构建的软件包相同
             mkdir build
             pushd build
                 ../configure --disable-bzlib      \
-                             --disable-libseccomp \
-                             --disable-xzlib      \
-                             --disable-zlib
-                make -j$LFS_BUILD_PROC
+                    --disable-libseccomp \
+                    --disable-xzlib      \
+                    --disable-zlib
+                make
             popd
+            sleep 5
+            # 编译
             ./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess)
-            make FILE_COMPILE=$(pwd)/build/src/file -j$LFS_BUILD_PROC && make DESTDIR=$LFS install
+            make FILE_COMPILE=$(pwd)/build/src/file && make DESTDIR=$LFS install
             if [ $? = 0 ]; then
+                # 移除对交叉编译有害的 libtool 档案文件
+                rm -v $LFS/usr/lib/libmagic.la
                 touch _BUILD_DONE
             else
                 pwd
