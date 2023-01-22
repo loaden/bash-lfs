@@ -16,10 +16,10 @@ fi
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
     PKG_NAME=make
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
-        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
+        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -39,10 +39,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=patch
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
-        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
+        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -62,10 +62,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=tar
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
-        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
+        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -87,10 +87,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=texinfo
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
-        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
+        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then

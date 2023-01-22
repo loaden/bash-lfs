@@ -16,7 +16,7 @@ fi
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
     PKG_NAME=gcc
-    PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         pushd $PKG_PATH
             tar -xpvf $(find ../.. -maxdepth 1 -type f -name mpfr-*.tar.*)
