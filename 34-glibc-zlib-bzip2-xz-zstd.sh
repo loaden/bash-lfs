@@ -267,9 +267,12 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make prefix=/usr install
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make prefix=/usr install
             if [ $? = 0 ]; then
                 rm -v /usr/lib/libzstd.a
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
