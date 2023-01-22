@@ -38,8 +38,11 @@ pushd /sources/_LFS_VERSION
                 libc_cv_slibdir=/usr/lib
             make -j1
             if [ $? = 0 ]; then
-                # 测试很重要
-                # 已知失败： io/tst-lchmod misc/tst-ttyname nss/tst-nss-file-hosts-multi
+                # 已知 io/tst-lchmod 在 LFS chroot 环境中会失败。
+                # 已知 misc/tst-ttyname 在 LFS chroot 环境中会失败。
+                # 已知 nss/tst-nss-file-hosts-long 在没有非本地回环的 IP 地址时会失败。
+                # 已知 stdlib/tst-arc4random-thread 在宿主内核版本较低时会失败。
+                # 一些测试，例如 nss/tst-nss-file-hosts-multi，在较慢的系统运行时会由于其内部发生超时而失败。
                 make check
                 read -p "$PKG_NAME CHECK DONE..."
 
@@ -117,7 +120,7 @@ rpc: files
 EOF
 
                 # 添加时区数据
-                tar -xf ../../tzdata2022c.tar.gz
+                tar -xvf /sources/_LFS_VERSION/tzdata2022c.tar.gz
 
                 ZONEINFO=/usr/share/zoneinfo
                 mkdir -pv $ZONEINFO/{posix,right}
