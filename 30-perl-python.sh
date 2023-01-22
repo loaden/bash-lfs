@@ -57,7 +57,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr   \
                 --enable-shared         \
                 --without-ensurepip
-            make -j_LFS_BUILD_PROC && make install
+            make && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
