@@ -72,7 +72,9 @@ pushd /sources/_LFS_VERSION
                 --disable-libuuid       \
                 --disable-uuidd         \
                 --disable-fsck
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 rm -fv /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
                 gunzip -v /usr/share/info/libext2fs.info.gz

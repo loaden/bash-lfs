@@ -34,7 +34,9 @@ pushd /sources/_LFS_VERSION
                 --disable-rlogin     \
                 --disable-rsh        \
                 --disable-servers
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 mv -v /usr/{,s}bin/ifconfig
                 touch _BUILD_DONE

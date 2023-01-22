@@ -28,8 +28,10 @@ pushd /sources/_LFS_VERSION
                 --disable-static        \
                 --sysconfdir=/etc       \
                 --docdir=/usr/share/doc/attr
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
