@@ -24,10 +24,8 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            sed -e 's/__attribute_nonnull__/__nonnull/' \
-                -i gnulib/lib/malloc/dynarray-skeleton.c
             ./configure --prefix=/usr
-            make -j_LFS_BUILD_PROC && make install
+            make && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
@@ -49,20 +47,20 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             mkdir -pv /var/lib/hwclock
-            ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime   \
-                --libdir=/usr/lib                               \
-                --docdir=/usr/share/doc/util-linux              \
-                --disable-chfn-chsh                             \
-                --disable-login                                 \
-                --disable-nologin                               \
-                --disable-su                                    \
-                --disable-setpriv                               \
-                --disable-runuser                               \
-                --disable-pylibmount                            \
-                --disable-static                                \
-                --without-python                                \
+            ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime    \
+                --libdir=/usr/lib    \
+                --docdir=/usr/share/doc/util-linux-2.38.1 \
+                --disable-chfn-chsh  \
+                --disable-login      \
+                --disable-nologin    \
+                --disable-su         \
+                --disable-setpriv    \
+                --disable-runuser    \
+                --disable-pylibmount \
+                --disable-static     \
+                --without-python     \
                 runstatedir=/run
-            make -j_LFS_BUILD_PROC && make install
+            make && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else
