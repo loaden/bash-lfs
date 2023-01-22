@@ -206,7 +206,8 @@ pushd /sources/_LFS_VERSION
             make -f Makefile-libbz2_so
             make clean
             # 编译
-            make -j_LFS_BUILD_PROC && make PREFIX=/usr install
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make PREFIX=/usr install
             if [ $? = 0 ]; then
                 # 安装共享库
                 cp -av libbz2.so.* /usr/lib

@@ -25,8 +25,9 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             ./configure --prefix=/usr
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make
+            [ $? = 0 ] && make check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
@@ -50,12 +51,15 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             sed -i '/MV.*old/d' Makefile.in
             sed -i '/{OLDSUFF}/c:' support/shlib-install
-            ./configure --prefix=/usr   \
-                --disable-static        \
-                --with-curses           \
-                --docdir=/usr/share/doc/readline
-            make -j_LFS_BUILD_PROC SHLIB_LIBS="-lncursesw" && make SHLIB_LIBS="-lncursesw" install
+            ./configure --prefix=/usr    \
+                --disable-static \
+                --with-curses    \
+                --docdir=/usr/share/doc/readline-8.1.2
+            [ $? = 0 ] && make SHLIB_LIBS="-lncursesw"
+            [ $? = 0 ] && make SHLIB_LIBS="-lncursesw" install
             if [ $? = 0 ]; then
+                install -v -m644 doc/*.{ps,pdf,html,dvi} /usr/share/doc/readline-8.1.2
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -73,18 +77,13 @@ pushd /sources/_LFS_VERSION
         PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ -f $PKG_PATH/Makefile ]; then
-        pushd $PKG_PATH
-            make distclean
-        popd
-    fi
-
     if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
         mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH/build
             ../configure --prefix=/usr
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make
+            [ $? = 0 ] && make check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
@@ -107,9 +106,12 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            CC=gcc ./configure --prefix=/usr -G -O3
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make install
+            CC=gcc ./configure --prefix=/usr -G -O3 -r
+            [ $? = 0 ] && make
+            [ $? = 0 ] && make test && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
