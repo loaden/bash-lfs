@@ -18,16 +18,17 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=make
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
-                touch _BUILD_DONE_2
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
@@ -40,16 +41,17 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=patch
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
-                touch _BUILD_DONE_2
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
@@ -62,20 +64,21 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=tar
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             make distclean
             FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
-                touch _BUILD_DONE_2
+                touch _BUILD_DONE
             else
                 pwd
                 read -p "FIXME: tar 部分测试失败，手动任意键继续..."
-                touch _BUILD_DONE_2
+                touch _BUILD_DONE
                 make install || exit 1
             fi
         popd
@@ -86,10 +89,11 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=texinfo
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr
@@ -98,7 +102,7 @@ pushd /sources/_LFS_VERSION
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 make TEXMF=/usr/share/texmf install-tex
-                touch _BUILD_DONE_2
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1

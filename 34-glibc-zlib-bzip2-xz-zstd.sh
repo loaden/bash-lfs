@@ -26,9 +26,9 @@ pushd /sources/_LFS_VERSION
         popd
     fi
 
-    if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build_2
-        pushd $PKG_PATH/build_2
+    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
+        mkdir -pv $PKG_PATH/build
+        pushd $PKG_PATH/build
             echo "rootsbindir=/usr/sbin" > configparms
             ../configure --prefix=/usr          \
                 --disable-werror                \
@@ -253,6 +253,10 @@ pushd /sources/_LFS_VERSION
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
         PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        pushd $PKG_PATH
+            find ../.. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
+            [ $? != 0 ] && exit 1
+        popd
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then

@@ -18,17 +18,18 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=gawk
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             make distclean
             sed -i 's/extras//' Makefile.in
             ./configure --prefix=/usr
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
-                touch _BUILD_DONE_2
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
@@ -41,10 +42,11 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=findutils
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             make distclean
             case $(uname -m) in
@@ -56,7 +58,7 @@ pushd /sources/_LFS_VERSION
             su tester -c "PATH=$PATH make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check"
             if [ $? = 0 ]; then
                 make install
-                touch _BUILD_DONE_2
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
@@ -91,16 +93,17 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=gzip
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/_BUILD_DONE_2 ]; then
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
-                touch _BUILD_DONE_2
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1

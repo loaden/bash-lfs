@@ -18,11 +18,33 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=gcc
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        pushd $PKG_PATH
+            tar -xpvf $(find ../.. -maxdepth 1 -type f -name mpfr-*.tar.*)
+            mv -v $(find . -maxdepth 1 -type d -name "mpfr-*") mpfr
+            tar -xpvf $(find ../.. -maxdepth 1 -type f -name gmp-*.tar.*)
+            mv -v $(find . -maxdepth 1 -type d -name "gmp-*") gmp
+            tar -xpvf $(find ../.. -maxdepth 1 -type f -name mpc-*.tar.*)
+            mv -v $(find . -maxdepth 1 -type d -name "mpc-*") mpc
+            case $(uname -m) in
+                x86_64)
+                    sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+                ;;
+            esac
+            cp -v libgcc/Makefile.in libgcc/Makefile.in.bak
+            cp -v libstdc++-v3/include/Makefile.in libstdc++-v3/include/Makefile.in.bak
+            sed '/thread_header =/s/@.*@/gthr-posix.h/' \
+                -i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
+            echo "---确认---"
+            diff gcc/config/i386/t-linux64.orig gcc/config/i386/t-linux64
+            diff libstdc++-v3/include/Makefile.in.bak libstdc++-v3/include/Makefile.in
+            diff libstdc++-v3/include/Makefile.in.bak libstdc++-v3/include/Makefile.in
+            echo "------"
+            sleep 5
+        popd
     fi
 
-    if [ ! -f $PKG_PATH/build_3/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build_3
+    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
+        mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH
             rm -rfv mpfr mpc gmp
             sed -e '/static.*SIGSTKSZ/d' \
@@ -35,7 +57,7 @@ pushd /sources/_LFS_VERSION
                 ;;
             esac
 
-            cd build_3
+            cd build
             ../configure --prefix=/usr   \
                 LD=ld                    \
                 --enable-languages=c,c++ \

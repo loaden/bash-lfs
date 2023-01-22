@@ -20,24 +20,20 @@ pushd /sources/_LFS_VERSION
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
         PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
-        pushd $PKG_PATH
-            find ../.. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
-            [ $? != 0 ] && exit 1
-        popd
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            sh Configure -des                                       \
-                        -Dprefix=/usr                               \
-                        -Dvendorprefix=/usr                         \
-                        -Dprivlib=/usr/lib/perl5/5.34/core_perl     \
-                        -Darchlib=/usr/lib/perl5/5.34/core_perl     \
-                        -Dsitelib=/usr/lib/perl5/5.34/site_perl     \
-                        -Dsitearch=/usr/lib/perl5/5.34/site_perl    \
-                        -Dvendorlib=/usr/lib/perl5/5.34/vendor_perl \
-                        -Dvendorarch=/usr/lib/perl5/5.34/vendor_perl
-            make -j_LFS_BUILD_PROC && make install
+            sh Configure -des                               \
+                -Dprefix=/usr                               \
+                -Dvendorprefix=/usr                         \
+                -Dprivlib=/usr/lib/perl5/5.36/core_perl     \
+                -Darchlib=/usr/lib/perl5/5.36/core_perl     \
+                -Dsitelib=/usr/lib/perl5/5.36/site_perl     \
+                -Dsitearch=/usr/lib/perl5/5.36/site_perl    \
+                -Dvendorlib=/usr/lib/perl5/5.36/vendor_perl \
+                -Dvendorarch=/usr/lib/perl5/5.36/vendor_perl
+            make && make install
             if [ $? = 0 ]; then
                 touch _BUILD_DONE
             else

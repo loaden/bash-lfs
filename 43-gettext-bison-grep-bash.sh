@@ -18,11 +18,12 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=gettext
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build_2
+    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
+        mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr   \
@@ -31,7 +32,7 @@ pushd /sources/_LFS_VERSION
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
                 chmod -v 0755 /usr/lib/preloadable_libintl.so
-                touch build_2/_BUILD_DONE
+                touch build/_BUILD_DONE
             else
                 pwd
                 exit 1
@@ -44,17 +45,18 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=bison
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build_2
+    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
+        mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.8.2
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
-                touch build_2/_BUILD_DONE
+                touch build/_BUILD_DONE
             else
                 pwd
                 exit 1
@@ -67,17 +69,18 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=grep
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build_2
+    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
+        mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr
             make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && make install
             if [ $? = 0 ]; then
-                touch build_2/_BUILD_DONE
+                touch build/_BUILD_DONE
             else
                 pwd
                 exit 1
@@ -91,11 +94,12 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=bash
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build_2
+    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
+        mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr           \
@@ -114,7 +118,7 @@ EOF
             make install
             if [ $? = 0 ]; then
                 echo exit | exec /usr/bin/bash --login
-                touch build_2/_BUILD_DONE
+                touch build/_BUILD_DONE
             else
                 pwd
                 exit 1

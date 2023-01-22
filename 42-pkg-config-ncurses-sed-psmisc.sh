@@ -87,11 +87,12 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=sed
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build_2/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build_2
+    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
+        mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH
             make distclean
             ./configure --prefix=/usr
@@ -102,7 +103,7 @@ pushd /sources/_LFS_VERSION
                 make install
                 install -d -m755           /usr/share/doc/sed-4.8
                 install -m644 doc/sed.html /usr/share/doc/sed-4.8
-                touch build_2/_BUILD_DONE
+                touch build/_BUILD_DONE
             else
                 pwd
                 exit 1

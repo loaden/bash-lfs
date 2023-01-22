@@ -73,7 +73,8 @@ pushd /sources/_LFS_VERSION
     PKG_NAME=perl
     PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        exit 1
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage3
+        PKG_PATH=$(find stage3 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
