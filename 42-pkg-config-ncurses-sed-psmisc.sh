@@ -30,6 +30,7 @@ pushd /sources/_LFS_VERSION
                 --docdir=/usr/share/doc/pkg-config
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
