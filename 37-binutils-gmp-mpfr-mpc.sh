@@ -23,24 +23,28 @@ pushd /sources/_LFS_VERSION
     fi
 
     if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
+        expect -c "spawn ls"
+        read -p "必须输出：spawn ls 才能继续"
+
         mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH/build
-            expect -c "spawn ls"
-            read -p "必须输出：spawn ls 才能任意键继续"
-            sed -e '/R_386_TLS_LE /i \   || (TYPE) == R_386_TLS_IE \\' \
-                -i $PKG_PATH/bfd/elfxx-x86.h
-            ../configure --prefix=/usr  \
-                --enable-gold           \
-                --enable-ld=default     \
-                --enable-plugins        \
-                --enable-shared         \
-                --disable-werror        \
-                --enable-64-bit-bfd     \
+            ../configure --prefix=/usr       \
+                --sysconfdir=/etc   \
+                --enable-gold       \
+                --enable-ld=default \
+                --enable-plugins    \
+                --enable-shared     \
+                --disable-werror    \
+                --enable-64-bit-bfd \
                 --with-system-zlib
-            CUR_MAKE_JOBS=$(echo _LFS_BUILD_PROC - 1 | bc)
-            make -j$CUR_MAKE_JOBS tooldir=/usr && make -j$CUR_MAKE_JOBS -k check && make tooldir=/usr install
+
+            [ $? = 0 ] && make tooldir=/usr
+            [ $? = 0 ] && make -k check
+            [ $? = 0 ] && make tooldir=/usr install
             if [ $? = 0 ]; then
+                # 删除无用的静态库
                 rm -fv /usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.a
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -60,15 +64,23 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr   \
-                --enable-cxx            \
-                --disable-static        \
-                --docdir=/usr/share/doc/gmp
-            make -j_LFS_BUILD_PROC && make html && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check 2>&1 | tee gmp-check-log
-            awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log
-            make install
-            make install-html
+            ./configure --prefix=/usr    \
+                --enable-cxx     \
+                --disable-static \
+                --docdir=/usr/share/doc/gmp-6.2.1
+            make && make html && make check 2>&1 | tee gmp-check-log
+            [ $? = 0 ] && make && make html
+            [ $? = 0 ] && make check 2>&1 | tee gmp-check-log
             if [ $? = 0 ]; then
+                # 务必确认测试全部通过
+                awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log
+                echo "务必确认测试全部通过"
+                read -p "$PKG_NAME CHECK DONE..."
+            fi
+
+            [ $? = 0 ] && make install && make install-html
+            if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -88,14 +100,20 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr   \
-                --disable-static        \
-                --enable-thread-safe    \
-                --docdir=/usr/share/doc/mpfr
-            make -j_LFS_BUILD_PROC && make html && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check
+            ./configure --prefix=/usr        \
+                --disable-static     \
+                --enable-thread-safe \
+                --docdir=/usr/share/doc/mpfr-4.1.0
+            [ $? = 0 ] && make && make html
+            [ $? = 0 ] && make check
             if [ $? = 0 ]; then
-                make install
-                make install-html
+                echo "务必确认测试全部通过"
+                read -p "$PKG_NAME CHECK DONE..."
+            fi
+
+            [ $? = 0 ] && make install && make install-html
+            if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -115,13 +133,15 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr   \
-                --disable-static        \
-                --docdir=/usr/share/doc/mpc
+            ./configure --prefix=/usr    \
+                --disable-static \
+                --docdir=/usr/share/doc/mpc-1.2.1
             make -j_LFS_BUILD_PROC && make html && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check
+            [ $? = 0 ] && make && make html
+            [ $? = 0 ] && make check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install && make install-html
             if [ $? = 0 ]; then
-                make install
-                make install-html
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
