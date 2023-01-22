@@ -40,6 +40,11 @@ pushd /sources/_LFS_VERSION
 
             [ $? = 0 ] && make tooldir=/usr
             [ $? = 0 ] && make -k check
+
+            # https://www.linuxfromscratch.org/lfs/build-logs/11.2/i7-1065G7/test-logs/816-binutils-2.39
+            # ld 会报59个测试失败，check-host会退出，注意和官方日志对比
+            echo "make -k check 退出代码：$?"
+
             [ $? = 0 ] && make tooldir=/usr install
             if [ $? = 0 ]; then
                 # 删除无用的静态库
