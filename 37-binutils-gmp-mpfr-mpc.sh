@@ -79,7 +79,7 @@ pushd /sources/_LFS_VERSION
             if [ $? = 0 ]; then
                 # 务必确认测试全部通过
                 awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log
-                echo "务必确认测试全部通过"
+                echo "务必确认 197 个测试全部通过"
                 read -p "$PKG_NAME CHECK DONE..."
             fi
 
