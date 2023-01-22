@@ -52,11 +52,14 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr   \
-                --disable-static        \
-                --docdir=/usr/share/doc/acl
-            make -j_LFS_BUILD_PROC && make install
+            ./configure --prefix=/usr \
+                --disable-static      \
+                --docdir=/usr/share/doc/acl-2.3.1
+
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -76,9 +79,14 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
+            # 防止静态库的安装
             sed -i '/install -m.*STA/d' libcap/Makefile
-            make -j_LFS_BUILD_PROC prefix=/usr lib=lib && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make prefix=/usr lib=lib install
+
+            [ $? = 0 ] && prefix=/usr lib=lib
+            [ $? = 0 ] && make test && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make prefix=/usr lib=lib install
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -98,24 +106,40 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
+            # 禁止该软件包安装 groups 程序和它的 man 页面，因为 Coreutils 会提供更好的版本
             sed -i 's/groups$(EXEEXT) //' src/Makefile.in
             find man -name Makefile.in -exec sed -i 's/groups\.1 / /'   {} \;
             find man -name Makefile.in -exec sed -i 's/getspnam\.3 / /' {} \;
             find man -name Makefile.in -exec sed -i 's/passwd\.5 / /'   {} \;
+
+            # 不使用默认的 crypt 加密方法
             sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD SHA512:' \
                 -e 's:/var/spool/mail:/var/mail:'                 \
                 -e '/PATH=/{s@/sbin:@@;s@/bin:@@}'                \
                 -i etc/login.defs
 
             touch /usr/bin/passwd
-            ./configure --sysconfdir=/etc   \
-                --disable-static            \
+            ./configure --sysconfdir=/etc \
+                --disable-static  \
                 --with-group-name-max-length=32
-            make -j_LFS_BUILD_PROC && make exec_prefix=/usr install && make -C man install-man
+
+            [ $? = 0 ] && make
+            [ $? = 0 ] && make exec_prefix=/usr install
+            [ $? = 0 ] && make -C man install-man
             if [ $? = 0 ]; then
-                pwconv && grpconv
-                [ $? = 0 ] || exit 99
+                # 对用户密码启用 Shadow 加密
+                pwconv
+                # 对组密码启用 Shadow 加密
+                grpconv
+                # 修改默认参数
+                mkdir -p /etc/default
+                useradd -D --gid 999
                 sed -i '/MAIL/s/yes/no/' /etc/default/useradd
+                # 设置root密码
+                echo "设置root用户密码"
+                passwd root
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
