@@ -80,6 +80,7 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             ./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.16.5
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            # XFAIL: 38 https://www.linuxfromscratch.org/lfs/build-logs
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
