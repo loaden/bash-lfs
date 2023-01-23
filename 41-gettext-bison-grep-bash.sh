@@ -118,6 +118,7 @@ expect eof
 lassign [wait] _ _ _ value
 exit $value
 EOF
+            read -p "$PKG_NAME CHECK DONE..."
             fi
 
             [ $? = 0 ] && make install
