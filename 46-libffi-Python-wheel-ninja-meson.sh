@@ -67,6 +67,7 @@ pushd /sources/_LFS_VERSION
 root-user-action = ignore
 disable-pip-version-check = true
 EOF
+
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
@@ -111,10 +112,15 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             python3 configure.py --bootstrap
             if [ $? = 0 ]; then
+                # 测试
                 ./ninja ninja_test
                 ./ninja_test --gtest_filter=-SubprocessTest.SetWithLots
+                # 安装
                 install -vm755 ninja /usr/bin/
                 install -vDm644 misc/bash-completion /usr/share/bash-completion/completions/ninja
+                install -vDm644 misc/zsh-completion  /usr/share/zsh/site-functions/_ninja
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -134,12 +140,14 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            python3 setup.py build
+            pip3 wheel -w dist --no-build-isolation --no-deps $PWD
+
             if [ $? = 0 ]; then
-                python3 setup.py install --root=dest
-                cp -rv dest/* /
+                pip3 install --no-index --find-links dist meson
                 install -vDm644 data/shell-completions/bash/meson /usr/share/bash-completion/completions/meson
                 install -vDm644 data/shell-completions/zsh/_meson /usr/share/zsh/site-functions/_meson
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
