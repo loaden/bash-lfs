@@ -61,7 +61,7 @@ pushd /sources/_LFS_VERSION
                 ulimit -s 32768
                 # 以非特权用户身份测试编译结果，但出错时继续执行其他测试
                 chown -Rv tester .
-                su tester -c "PATH=$PATH make -k check"
+                su tester -c "PATH=$PATH make -j_LFS_BUILD_PROC -k check"
                 # 查看测试结果
                 # 对比：https://www.linuxfromscratch.org/lfs/build-logs/
                 ../contrib/test_summary | grep -A7 Summ
