@@ -62,6 +62,7 @@ pushd /sources/_LFS_VERSION
                 --enable-optimizations
             make -j_LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch build/_BUILD_DONE
             else
                 pwd

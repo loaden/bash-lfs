@@ -24,12 +24,13 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr   \
-                --with-internal-glib    \
-                --disable-host-tool     \
-                --docdir=/usr/share/doc/pkg-config
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            ./configure --prefix=/usr      \
+                --with-internal-glib       \
+                --disable-host-tool        \
+                --docdir=/usr/share/doc/pkg-config-0.29.2
+
+            [ $? = 0 ] && make
+            [ $? = 0 ] && make check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
@@ -57,26 +58,37 @@ pushd /sources/_LFS_VERSION
                 --with-shared           \
                 --without-debug         \
                 --without-normal        \
+                --with-cxx-shared       \
                 --enable-pc-files       \
                 --enable-widec          \
                 --with-pkg-config-libdir=/usr/lib/pkgconfig
-            make -j_LFS_BUILD_PROC
-            make DESTDIR=$PWD/dest install
-            install -vm755 dest/usr/lib/libncursesw.so.6.3 /usr/lib
-            rm -v  dest/usr/lib/{libncursesw.so.6.3,libncurses++w.a}
-            cp -av dest/* /
 
-            for lib in ncurses form panel menu ; do
-                rm -vf                    /usr/lib/lib${lib}.so
-                echo "INPUT(-l${lib}w)" > /usr/lib/lib${lib}.so
-                ln -sfv ${lib}w.pc        /usr/lib/pkgconfig/${lib}.pc
-            done
-
-            rm -vf                     /usr/lib/libcursesw.so
-            echo "INPUT(-lncursesw)" > /usr/lib/libcursesw.so
-            ln -sfv libncurses.so      /usr/lib/libcurses.so
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make DESTDIR=$PWD/dest install
 
             if [ $? = 0 ]; then
+                # 正确地使用 install 命令安装库文件
+                install -vm755 dest/usr/lib/libncursesw.so.6.3 /usr/lib
+                rm -v  dest/usr/lib/libncursesw.so.6.3
+                cp -av dest/* /
+
+                # 诱导它们链接到宽字符库
+                for lib in ncurses form panel menu ; do
+                    rm -vf                    /usr/lib/lib${lib}.so
+                    echo "INPUT(-l${lib}w)" > /usr/lib/lib${lib}.so
+                    ln -sfv ${lib}w.pc        /usr/lib/pkgconfig/${lib}.pc
+                done
+
+                # 确保那些在构建时寻找 -lcurses 的老式程序仍然能够构建
+                rm -vf                     /usr/lib/libcursesw.so
+                echo "INPUT(-lncursesw)" > /usr/lib/libcursesw.so
+                ln -sfv libncurses.so      /usr/lib/libcurses.so
+
+                # 安装 Ncurses 文档
+                mkdir -pv      /usr/share/doc/ncurses-6.3
+                cp -v -R doc/* /usr/share/doc/ncurses-6.3
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -97,15 +109,21 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
         mkdir -pv $PKG_PATH/build
         pushd $PKG_PATH
-            make distclean
             ./configure --prefix=/usr
-            make -j_LFS_BUILD_PROC && make html
+
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make html
             if [ $? = 0 ]; then
                 chown -Rv tester .
-                su tester -c "PATH=$PATH make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check"
-                make install
+                su tester -c "PATH=$PATH make check"
+            fi
+
+            [ $? = 0 ] && make install
+            if [ $? = 0 ]; then
                 install -d -m755           /usr/share/doc/sed-4.8
                 install -m644 doc/sed.html /usr/share/doc/sed-4.8
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch build/_BUILD_DONE
             else
                 pwd
@@ -128,6 +146,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr
             make -j_LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd

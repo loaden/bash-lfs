@@ -15,26 +15,33 @@ fi
 
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
-    PKG_NAME=gettext
+    PKG_NAME=inetutils
     PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
         PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
-            ./configure --prefix=/usr   \
-                --disable-static        \
-                --docdir=/usr/share/doc/gettext
+            ./configure --prefix=/usr        \
+                --bindir=/usr/bin    \
+                --localstatedir=/var \
+                --disable-logger     \
+                --disable-whois      \
+                --disable-rcp        \
+                --disable-rexec      \
+                --disable-rlogin     \
+                --disable-rsh        \
+                --disable-servers
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
-                chmod -v 0755 /usr/lib/preloadable_libintl.so
-                touch build/_BUILD_DONE
+                # 将一个程序移动到正确的位置
+                mv -v /usr/{,s}bin/ifconfig
+                read -p "$PKG_NAME ALL DONE..."
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
@@ -44,23 +51,20 @@ pushd /sources/_LFS_VERSION
 popd
 
 pushd /sources/_LFS_VERSION
-    PKG_NAME=bison
+    PKG_NAME=less
     PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
         PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
-            ./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.8.2
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
-            [ $? = 0 ] && make install
+            ./configure --prefix=/usr --sysconfdir=/etc
+            make -j_LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
-                touch build/_BUILD_DONE
+                read -p "$PKG_NAME ALL DONE..."
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
@@ -70,23 +74,38 @@ pushd /sources/_LFS_VERSION
 popd
 
 pushd /sources/_LFS_VERSION
-    PKG_NAME=grep
+    PKG_NAME=perl
     PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
         PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
-            ./configure --prefix=/usr
+            export BUILD_ZLIB=False
+            export BUILD_BZIP2=0
+            sh Configure -des                                \
+                -Dprefix=/usr                                \
+                -Dvendorprefix=/usr                          \
+                -Dprivlib=/usr/lib/perl5/5.36/core_perl      \
+                -Darchlib=/usr/lib/perl5/5.36/core_perl      \
+                -Dsitelib=/usr/lib/perl5/5.36/site_perl      \
+                -Dsitearch=/usr/lib/perl5/5.36/site_perl     \
+                -Dvendorlib=/usr/lib/perl5/5.36/vendor_perl  \
+                -Dvendorarch=/usr/lib/perl5/5.36/vendor_perl \
+                -Dman1dir=/usr/share/man/man1                \
+                -Dman3dir=/usr/share/man/man3                \
+                -Dpager="/usr/bin/less -isR"                 \
+                -Duseshrplib                                 \
+                -Dusethreads
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
-                touch build/_BUILD_DONE
+                unset BUILD_ZLIB BUILD_BZIP2
+                read -p "$PKG_NAME ALL DONE..."
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
@@ -95,36 +114,22 @@ pushd /sources/_LFS_VERSION
     fi
 popd
 
-
 pushd /sources/_LFS_VERSION
-    PKG_NAME=bash
+    PKG_NAME=XML-Parser
     PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
         PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
-            ./configure --prefix=/usr           \
-                --docdir=/usr/share/doc/bash    \
-                --without-bash-malloc           \
-                --with-installed-readline
-            make -j_LFS_BUILD_PROC || exit 99
-            chown -Rv tester .
-            su -s /usr/bin/expect tester << EOF
-set timeout -1
-spawn make tests
-expect eof
-lassign [wait] _ _ _ value
-exit $value
-EOF
-            make install
+            perl Makefile.PL
+            [ $? = 0 ] && make
+            [ $? = 0 ] && make test && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
-                echo exit | exec /usr/bin/bash --login
-                touch build/_BUILD_DONE
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1

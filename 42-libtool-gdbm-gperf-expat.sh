@@ -15,7 +15,7 @@ fi
 
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
-    PKG_NAME=inetutils
+    PKG_NAME=libtool
     PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
@@ -24,21 +24,41 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr \
-                --bindir=/usr/bin    \
-                --localstatedir=/var \
-                --disable-logger     \
-                --disable-whois      \
-                --disable-rcp        \
-                --disable-rexec      \
-                --disable-rlogin     \
-                --disable-rsh        \
-                --disable-servers
+            ./configure --prefix=/usr
+
+            [ $? = 0 ] && make
+            [ $? = 0 ] && make check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
+            if [ $? = 0 ]; then
+                # 删除无用的静态库
+                rm -fv /usr/lib/libltdl.a
+                touch _BUILD_DONE
+            else
+                pwd
+                exit 1
+            fi
+        popd
+    fi
+popd
+
+pushd /sources/_LFS_VERSION
+    PKG_NAME=gdbm
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
+        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    fi
+
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
+            ./configure --prefix=/usr    \
+                --disable-static \
+                --enable-libgdbm-compat
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
-                mv -v /usr/{,s}bin/ifconfig
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -49,7 +69,7 @@ pushd /sources/_LFS_VERSION
 popd
 
 pushd /sources/_LFS_VERSION
-    PKG_NAME=less
+    PKG_NAME=gperf
     PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
@@ -58,10 +78,12 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr --sysconfdir=/etc
-            make -j_LFS_BUILD_PROC && make install
+            ./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.1
+            [ $? = 0 ] && make
+            [ $? = 0 ] && make -j1 check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
-                mv -v /usr/{,s}bin/ifconfig
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -72,7 +94,7 @@ pushd /sources/_LFS_VERSION
 popd
 
 pushd /sources/_LFS_VERSION
-    PKG_NAME=perl
+    PKG_NAME=expat
     PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
@@ -81,47 +103,15 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            export BUILD_ZLIB=False
-            export BUILD_BZIP2=0
-            sh Configure -des                                \
-                -Dprefix=/usr                                \
-                -Dvendorprefix=/usr                          \
-                -Dprivlib=/usr/lib/perl5/5.34/core_perl      \
-                -Darchlib=/usr/lib/perl5/5.34/core_perl      \
-                -Dsitelib=/usr/lib/perl5/5.34/site_perl      \
-                -Dsitearch=/usr/lib/perl5/5.34/site_perl     \
-                -Dvendorlib=/usr/lib/perl5/5.34/vendor_perl  \
-                -Dvendorarch=/usr/lib/perl5/5.34/vendor_perl \
-                -Dman1dir=/usr/share/man/man1                \
-                -Dman3dir=/usr/share/man/man3                \
-                -Dpager="/usr/bin/less -isR"                 \
-                -Duseshrplib                                 \
-                -Dusethreads
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make install
+            ./configure --prefix=/usr    \
+                --disable-static \
+                --docdir=/usr/share/doc/expat-2.4.8
+            [ $? = 0 ] && make
+            [ $? = 0 ] && make check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
-                unset BUILD_ZLIB BUILD_BZIP2
-                touch _BUILD_DONE
-            else
-                pwd
-                exit 1
-            fi
-        popd
-    fi
-popd
-
-pushd /sources/_LFS_VERSION
-    PKG_NAME=XML-Parser
-    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
-        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    fi
-
-    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
-        pushd $PKG_PATH
-            perl Makefile.PL
-            make -j_LFS_BUILD_PROC && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && make install
-            if [ $? = 0 ]; then
+                install -v -m644 doc/*.{html,css} /usr/share/doc/expat-2.4.8
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
