@@ -26,12 +26,19 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             ./configure --prefix=/usr
 
-            [ $? = 0 ] && make
-            [ $? = 0 ] && make check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+
+            # 测试会出错退出且大量失败，但官方日志也是一样的结果，经对比可继续进行
+            # https://www.linuxfromscratch.org/lfs/build-logs
+            # 63 failed (58 expected failures).
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC -k check
+            read -p "$PKG_NAME CHECK DONE..."
+
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 # 删除无用的静态库
                 rm -fv /usr/lib/libltdl.a
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
