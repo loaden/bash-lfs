@@ -5,26 +5,26 @@
 # 构建其他基础工具
 #
 
-echo -e "\033[31mKILL 40-libtool-gdbm-gperf-expat.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../40-libtool-gdbm-gperf-expat.sh
+echo -e "\033[31mKILL 40-pkg-config-ncurses-sed-psmisc.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../40-pkg-config-ncurses-sed-psmisc.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 41-inetutils-less-perl-XML-Parser.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../41-inetutils-less-perl-XML-Parser.sh
+echo -e "\033[31mKILL 41-gettext-bison-grep-bash.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../41-gettext-bison-grep-bash.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 42-pkg-config-ncurses-sed-psmisc.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../42-pkg-config-ncurses-sed-psmisc.sh
+echo -e "\033[31mKILL 42-libtool-gdbm-gperf-expat.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../42-libtool-gdbm-gperf-expat.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
 
-echo -e "\033[31mKILL 43-gettext-bison-grep-bash.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../43-gettext-bison-grep-bash.sh
+echo -e "\033[31mKILL 43-inetutils-less-perl-XML-Parser.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../43-inetutils-less-perl-XML-Parser.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
@@ -41,8 +41,8 @@ bash `dirname ${BASH_SOURCE[0]}`/../45-openssl-kmod-elfutils.sh
 echo DONE
 echo
 
-echo -e "\033[31mKILL 46-libffi-Python-ninja-meson.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../46-libffi-Python-ninja-meson.sh
+echo -e "\033[31mKILL 46-libffi-Python-wheel-ninja-meson.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../46-libffi-Python-wheel-ninja-meson.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo

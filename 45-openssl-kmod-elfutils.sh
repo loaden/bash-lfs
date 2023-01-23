@@ -29,10 +29,15 @@ pushd /sources/_LFS_VERSION
                 --libdir=lib          \
                 shared                \
                 zlib-dynamic
-            make -j_LFS_BUILD_PROC && make -j_LFS_BUILD_PROC test
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC test && read -p "$PKG_NAME CHECK DONE..."
             if [ $? = 0 ]; then
                 sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
                 make MANSUFFIX=ssl install
+                mv -v /usr/share/doc/openssl /usr/share/doc/openssl-3.0.5
+                cp -vfr doc/* /usr/share/doc/openssl-3.0.5
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -58,12 +63,16 @@ pushd /sources/_LFS_VERSION
                 --with-xz              \
                 --with-zstd            \
                 --with-zlib
+
             make -j_LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
                 for target in depmod insmod modinfo modprobe rmmod; do
                     ln -sfv ../bin/kmod /usr/sbin/$target
                 done
+
                 ln -sfv kmod /usr/bin/lsmod
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -86,12 +95,14 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr        \
                 --disable-debuginfod         \
                 --enable-libdebuginfod=dummy
+
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make -C libelf install
             if [ $? = 0 ]; then
                 install -vm644 config/libelf.pc /usr/lib/pkgconfig
                 rm /usr/lib/libelf.a
+
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else

@@ -28,6 +28,7 @@ pushd /sources/_LFS_VERSION
                 --disable-static       \
                 --with-gcc-arch=native \
                 --disable-exec-static-tramp
+
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
@@ -50,20 +51,46 @@ pushd /sources/_LFS_VERSION
         PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
-    if [ ! -f $PKG_PATH/build/_BUILD_DONE ]; then
-        mkdir -pv $PKG_PATH/build
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
-            ./configure --prefix=/usr   \
-                --enable-shared         \
-                --with-system-expat     \
-                --with-system-ffi       \
-                --with-ensurepip=yes    \
+            ./configure --prefix=/usr        \
+                --enable-shared      \
+                --with-system-expat  \
+                --with-system-ffi    \
                 --enable-optimizations
+
             make -j_LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
+                # 忽略关于新的 pip3 版本的警告
+                cat > /etc/pip.conf << EOF
+[global]
+root-user-action = ignore
+disable-pip-version-check = true
+EOF
                 read -p "$PKG_NAME ALL DONE..."
-                touch build/_BUILD_DONE
+                touch _BUILD_DONE
+            else
+                pwd
+                exit 1
+            fi
+        popd
+    fi
+popd
+
+pushd /sources/_LFS_VERSION
+    PKG_NAME=wheel
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
+        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    fi
+
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
+            pip3 install --no-index $PWD
+            if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
