@@ -35,7 +35,7 @@ pushd /sources/_LFS_VERSION
                 --disable-rsh        \
                 --disable-servers
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 # 将一个程序移动到正确的位置
@@ -100,7 +100,7 @@ pushd /sources/_LFS_VERSION
                 -Duseshrplib                                 \
                 -Dusethreads
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC test && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC test && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 unset BUILD_ZLIB BUILD_BZIP2

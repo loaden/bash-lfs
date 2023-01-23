@@ -28,7 +28,7 @@ pushd /sources/_LFS_VERSION
                 --docdir=/usr/share/doc/flex-2.6.4 \
                 --disable-static
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 ln -sv flex /usr/bin/lex

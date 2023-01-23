@@ -141,7 +141,6 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr    \
                 --disable-static \
                 --docdir=/usr/share/doc/mpc-1.2.1
-            make -j_LFS_BUILD_PROC && make html && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check
             [ $? = 0 ] && make && make html
             [ $? = 0 ] && make check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install && make install-html

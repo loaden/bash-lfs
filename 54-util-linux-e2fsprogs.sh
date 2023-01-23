@@ -42,7 +42,7 @@ pushd /sources/_LFS_VERSION
             make -j_LFS_BUILD_PROC || exit 99
             # FIXME: util-linux 测试会死锁
             # chown -Rv tester .
-            # su tester -c "make TESTSUITEFLAGS=-j_LFS_BUILD_PROC -k check"
+            # su tester -c "make -j_LFS_BUILD_PROC -k check"
             if [ $? = 0 ]; then
                 make install
                 touch _BUILD_DONE
@@ -73,7 +73,7 @@ pushd /sources/_LFS_VERSION
                 --disable-uuidd         \
                 --disable-fsck
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make TESTSUITEFLAGS=-j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 rm -fv /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
