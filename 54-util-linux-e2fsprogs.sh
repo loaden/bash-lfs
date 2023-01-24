@@ -38,7 +38,7 @@ pushd /sources/_LFS_VERSION
                 --disable-pylibmount \
                 --disable-static     \
                 --without-python
-            make -j_LFS_BUILD_PROC || exit 99
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
             # FIXME: util-linux 测试会死锁
             # chown -Rv tester .
             # su tester -c "make -j_LFS_BUILD_PROC -k check"

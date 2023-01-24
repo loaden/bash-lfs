@@ -129,6 +129,7 @@ pushd /sources/_LFS_VERSION
             [ $? = 0 ] && make test && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd

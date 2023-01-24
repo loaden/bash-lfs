@@ -27,6 +27,7 @@ pushd /sources/_LFS_VERSION
             python3 setup.py build
             python3 setup.py install --optimize=1
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -48,6 +49,7 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             python3 setup.py install --optimize=1
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd

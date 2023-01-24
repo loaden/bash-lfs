@@ -28,6 +28,7 @@ pushd /sources/_LFS_VERSION
             rm -fv man/man8/arpd.8
             make -j_LFS_BUILD_PROC && make SBINDIR=/usr/sbin install
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd

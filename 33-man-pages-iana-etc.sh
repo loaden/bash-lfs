@@ -26,6 +26,7 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             make prefix=/usr install
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -47,6 +48,7 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             cp -v services protocols /etc
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd

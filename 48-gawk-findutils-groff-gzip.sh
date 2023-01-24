@@ -30,6 +30,8 @@ pushd /sources/_LFS_VERSION
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
+                mkdir -pv                                   /usr/share/doc/gawk-5.1.1
+                cp    -v doc/{awkforai.txt,*.{eps,pdf,jpg}} /usr/share/doc/gawk-5.1.1
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
@@ -54,11 +56,17 @@ pushd /sources/_LFS_VERSION
                 i?86)   TIME_T_32_BIT_OK=yes ./configure --prefix=/usr --localstatedir=/var/lib/locate ;;
                 x86_64) ./configure --prefix=/usr --localstatedir=/var/lib/locate ;;
             esac
-            make -j_LFS_BUILD_PROC || exit 99
-            chown -Rv tester .
-            su tester -c "PATH=$PATH make -j_LFS_BUILD_PROC check"
+
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
             if [ $? = 0 ]; then
-                make install
+                chown -Rv tester .
+                su tester -c "PATH=$PATH make -j_LFS_BUILD_PROC check"
+                read -p "$PKG_NAME CHECK DONE..."
+            fi
+
+            [ $? = 0 ] && make install
+            if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -81,6 +89,7 @@ pushd /sources/_LFS_VERSION
             PAGE=A4 ./configure --prefix=/usr
             make -j1 && make install
             if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
