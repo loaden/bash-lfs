@@ -43,7 +43,9 @@ pushd /sources/_LFS_VERSION
                 # 普通用户测试，需要建立临时组
                 echo "dummy:x:102:tester" >> /etc/group
                 chown -Rv tester .
-                su tester -c "PATH=$PATH make -j_LFS_BUILD_PROC RUN_EXPENSIVE_TESTS=yes check"
+                # https://www.linuxfromscratch.org/lfs/build-logs
+                # 官方也会出现一个FAIL，另外，测试失败了要继续
+                su tester -c "PATH=$PATH make -j_LFS_BUILD_PROC -k RUN_EXPENSIVE_TESTS=yes check"
                 sed -i '/dummy/d' /etc/group
                 read -p "$PKG_NAME CHECK-2 DONE..."
             fi
