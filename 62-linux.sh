@@ -27,10 +27,22 @@ pushd /sources/_LFS_VERSION
             # 确保内核源代码树绝对干净
             make mrproper
 
-            # 默认内核选项
+            # 生成默认配置
             make defconfig
-            cp -v .config .config.def
-            ls -lh .config
+            mv .config .config.def
+
+            # 根据当前模块使用情况生成内核配置
+            make localmodconfig
+            mv .config .config.mod
+
+            # 合并配置
+            scripts/kconfig/merge_config.sh -y .config.def .config.mod
+            cp .config .config.merge
+
+            # 合并前后对比
+            echo "合并前后对比->"
+            scripts/diffconfig .config.mod .config.merge
+            read -p "<-合并前后对比"
 
             #
             # 必要的配置调整
@@ -109,10 +121,24 @@ pushd /sources/_LFS_VERSION
             # 刷新
             scripts/config  --refresh
 
+            # 备份
+            cp .config .config.opti
+
+            # 优化前后对比
+            echo "优化前后对比->"
+            scripts/diffconfig .config.merge .config.opti
+            read -p "<-优化前后对比"
+
             # 图形界面调整配置，配置后记得保存
             make menuconfig
-            scripts/diffconfig .config.def .config
-            ls -lh .config
+
+            # 优化前后对比
+            echo "图形界面调整对比->"
+            scripts/diffconfig .config.opti .config
+            read -p "<-图形界面调整对比"
+
+            # 查看配置文件
+            ls -lh .config*
 
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
