@@ -28,7 +28,7 @@ pushd /sources/_LFS_VERSION
                 --bindir=/usr/bin    \
                 --libdir=/usr/lib    \
                 --sbindir=/usr/sbin  \
-                --docdir=/usr/share/doc/util-linux-2.37.4 \
+                --docdir=/usr/share/doc/util-linux-2.38.1 \
                 --disable-chfn-chsh  \
                 --disable-login      \
                 --disable-nologin    \
@@ -38,12 +38,18 @@ pushd /sources/_LFS_VERSION
                 --disable-pylibmount \
                 --disable-static     \
                 --without-python
+
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            # FIXME: util-linux 测试会死锁
-            # chown -Rv tester .
-            # su tester -c "make -j_LFS_BUILD_PROC -k check"
+
             if [ $? = 0 ]; then
-                make install
+                chown -Rv tester .
+                su tester -c "make -k check"
+                read -p "$PKG_NAME CHECK DONE..."
+            fi
+
+            [ $? = 0 ] && make install
+            if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -71,22 +77,32 @@ pushd /sources/_LFS_VERSION
                 --disable-libuuid       \
                 --disable-uuidd         \
                 --disable-fsck
+
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            if [ $? = 0 ]; then
+                # 已知一项名为 u_direct_io 的测试可能在一些系统上失败
+                # 370 tests succeeded     1 tests failed
+                make -j_LFS_BUILD_PROC -k check
+                read -p "$PKG_NAME CHECK DONE..."
+            fi
+
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
+                # 删除无用的静态库
                 rm -fv /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+                # 解压并更新系统 dir 文件
                 gunzip -v /usr/share/info/libext2fs.info.gz
                 install-info --dir-file=/usr/share/info/dir /usr/share/info/libext2fs.info
+                # 创建并安装一些额外的文档
+                makeinfo -o      doc/com_err.info ../lib/et/com_err.texinfo
+                install -v -m644 doc/com_err.info /usr/share/info
+                install-info --dir-file=/usr/share/info/dir /usr/share/info/com_err.info
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
-                read -p "FIXME: e2fsprogs 测试失败，任意键继续..."
-                make install || exit 1
-                rm -fv /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
-                gunzip -v /usr/share/info/libext2fs.info.gz
-                install-info --dir-file=/usr/share/info/dir /usr/share/info/libext2fs.info
-                touch _BUILD_DONE
+                exit 1
             fi
         popd
     fi

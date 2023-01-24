@@ -27,15 +27,16 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr                \
                 --sysconfdir=/etc                    \
                 --localstatedir=/var                 \
+                --runstatedir=/run                   \
                 --disable-static                     \
                 --disable-doxygen-docs               \
                 --disable-xml-docs                   \
-                --docdir=/usr/share/doc/dbus-1.12.20 \
-                --with-console-auth-dir=/run/console \
-                --with-system-pid-file=/run/dbus/pid \
+                --docdir=/usr/share/doc/dbus-1.14.0 \
                 --with-system-socket=/run/dbus/system_bus_socket
+
             make -j_LFS_BUILD_PROC && make install
             if [ $? = 0 ]; then
+                # 使 D-Bus 和 systemd 使用同一个 machine-id 文件
                 ln -sfv /etc/machine-id /var/lib/dbus
                 touch _BUILD_DONE
             else
@@ -57,13 +58,14 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             ./configure --prefix=/usr                 \
-                --docdir=/usr/share/doc/man-db-2.10.1 \
+                --docdir=/usr/share/doc/man-db-2.10.2 \
                 --sysconfdir=/etc                     \
                 --disable-setuid                      \
                 --enable-cache-owner=bin              \
                 --with-browser=/usr/bin/lynx          \
                 --with-vgrind=/usr/bin/vgrind         \
                 --with-grap=/usr/bin/grap
+
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
@@ -88,22 +90,25 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            ./configure --prefix=/usr               \
-                --docdir=/usr/share/doc/procps-ng   \
-                --disable-static                    \
-                --disable-kill                      \
+            ./configure --prefix=/usr                    \
+                --docdir=/usr/share/doc/procps-ng-4.0.0  \
+                --disable-static                         \
+                --disable-kill                           \
                 --with-systemd
+
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            if [ $? = 0 ]; then
+                make -j_LFS_BUILD_PROC -k check
+                read -p "$PKG_NAME CHECK DONE..."
+            fi
+
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
-                read -p "FIXME: procps 测试失败，任意键继续..."
-                make install || exit 1
-                touch _BUILD_DONE
+                exit 1
             fi
         popd
     fi
