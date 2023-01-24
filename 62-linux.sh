@@ -200,7 +200,24 @@ pushd /sources/_LFS_VERSION
 
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make modules_install
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
+                # 备份配置
+                cp -iv .config /boot/config-5.19.2
+                # 安装文档
+                install -d /usr/share/doc/linux-5.19.2
+                cp -r Documentation/* /usr/share/doc/linux-5.19.2
+                # 设置USB驱动加载顺序，以避免启动警告
+                install -v -m755 -d /etc/modprobe.d
+                cat > /etc/modprobe.d/usb.conf << "EOF"
+# Begin /etc/modprobe.d/usb.conf
+
+install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
+install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
+
+# End /etc/modprobe.d/usb.conf
+EOF
+
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
