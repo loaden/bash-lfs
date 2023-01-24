@@ -53,7 +53,7 @@ bash `dirname ${BASH_SOURCE[0]}`/../47-coreutils-check-diffutils.sh
 echo DONE
 echo
 
-echo -e "\033[31mKILL 48-gawk-findutils-groff-gzip.sh ...\033[0m"
+echo -e "\033[31mKILL 48-gawk-findutils-groff-grub-gzip.sh ...\033[0m"
 bash `dirname ${BASH_SOURCE[0]}`/../48-gawk-findutils-groff-gzip.sh
 [ $? = 0 ] || exit 2
 echo DONE

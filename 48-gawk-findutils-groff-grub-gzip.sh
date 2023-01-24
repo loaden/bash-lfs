@@ -100,6 +100,35 @@ pushd /sources/_LFS_VERSION
 popd
 
 pushd /sources/_LFS_VERSION
+    PKG_NAME=grub
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
+        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    fi
+
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
+            ./configure --prefix=/usr  \
+                --sysconfdir=/etc      \
+                --disable-efiemu       \
+                --disable-werror
+
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make install
+            if [ $? = 0 ]; then
+                mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+                read -p "$PKG_NAME ALL DONE..."
+                touch _BUILD_DONE
+            else
+                pwd
+                exit 1
+            fi
+        popd
+    fi
+popd
+
+pushd /sources/_LFS_VERSION
     PKG_NAME=gzip
     PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
