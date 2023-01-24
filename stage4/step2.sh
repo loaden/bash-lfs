@@ -1,8 +1,8 @@
 #!/bin/bash
 # QQ群：111601117、钉钉群：35948877
 
-# step3
-# 构建其他基础工具
+# step2
+# 构建基础系统
 #
 
 echo -e "\033[31mKILL 40-pkg-config-ncurses-sed-psmisc.sh ...\033[0m"
