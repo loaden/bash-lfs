@@ -32,8 +32,6 @@ pushd /sources/_LFS_VERSION
             if [ $? = 0 ]; then
                 chown -Rv tester .
                 su tester -c "LANG=en_US.UTF-8 make -j1 test" &> vim-test.log
-                echo ------
-                tail -n 20 vim-test.log
                 read -p "$PKG_NAME CHECK DONE..."
             fi
 
