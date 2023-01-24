@@ -24,7 +24,6 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
             sed -i 's/extras//' Makefile.in
             ./configure --prefix=/usr
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
@@ -51,7 +50,6 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
             case $(uname -m) in
                 i?86)   TIME_T_32_BIT_OK=yes ./configure --prefix=/usr --localstatedir=/var/lib/locate ;;
                 x86_64) ./configure --prefix=/usr --localstatedir=/var/lib/locate ;;
@@ -102,7 +100,6 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
             ./configure --prefix=/usr
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."

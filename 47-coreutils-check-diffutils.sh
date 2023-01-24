@@ -28,22 +28,33 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
-            .autoreconf -fiv
-            FORCE_UNSAFE_CONFIGURE=1 ./configure    \
-                --prefix=/usr                       \
+            autoreconf -fiv
+            FORCE_UNSAFE_CONFIGURE=1 ./configure \
+                --prefix=/usr            \
                 --enable-no-install-program=kill,uptime
-            make -j_LFS_BUILD_PROC || exit 99
-            make NON_ROOT_USERNAME=tester check-root
-            echo "dummy:x:102:tester" >> /etc/group
-            chown -Rv tester .
-            su tester -c "PATH=$PATH make RUN_EXPENSIVE_TESTS=yes check"
-            sed -i '/dummy/d' /etc/group
-            make install
+
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+
+            if [ $? = 0 ]; then
+                # root用户测试
+                make -j_LFS_BUILD_PROC NON_ROOT_USERNAME=tester check-root
+                read -p "$PKG_NAME CHECK-1 DONE..."
+
+                # 普通用户测试，需要建立临时组
+                echo "dummy:x:102:tester" >> /etc/group
+                chown -Rv tester .
+                su tester -c "PATH=$PATH make -j_LFS_BUILD_PROC RUN_EXPENSIVE_TESTS=yes check"
+                sed -i '/dummy/d' /etc/group
+                read -p "$PKG_NAME CHECK-2 DONE..."
+            fi
+
+            [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 mv -v /usr/bin/chroot /usr/sbin
                 mv -v /usr/share/man/man1/chroot.1 /usr/share/man/man8/chroot.8
                 sed -i 's/"1"/"8"/' /usr/share/man/man8/chroot.8
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
@@ -66,7 +77,7 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr --disable-static
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
-            [ $? = 0 ] && make install
+            [ $? = 0 ] && make docdir=/usr/share/doc/check-0.15.2 install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
@@ -88,7 +99,6 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
             ./configure --prefix=/usr
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."

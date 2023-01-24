@@ -24,7 +24,6 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            make distclean
             ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime   \
                 --bindir=/usr/bin    \
                 --libdir=/usr/lib    \
