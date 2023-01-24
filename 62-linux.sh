@@ -28,11 +28,11 @@ pushd /sources/_LFS_VERSION
             make mrproper
 
             # 生成默认配置
-            make defconfig
+            make ARCH=x86_64 defconfig
             mv .config .config.def
 
             # 根据当前模块使用情况生成内核配置
-            make localmodconfig
+            make ARCH=x86_64 localmodconfig
             mv .config .config.mod
 
             # 合并配置
@@ -45,7 +45,7 @@ pushd /sources/_LFS_VERSION
             read -p "<-合并前后对比"
 
             #
-            # 必要的配置调整
+            # 推荐配置调整
             #
 
             # [ ] Compile the kernel with warnings as errors [CONFIG_WERROR]
@@ -122,27 +122,87 @@ pushd /sources/_LFS_VERSION
             scripts/config  --refresh
 
             # 备份
+            cp .config .config.lfs
+
+            # 推荐配置调整前后对比
+            echo "推荐配置调整前后对比->"
+            scripts/diffconfig .config.merge .config.lfs
+            read -p "<-推荐配置调整前后对比"
+
+            #
+            # 扩展配置与优化
+            #
+
+            # ((none)) Default hostname [CONFIG_DEFAULT_HOSTNAME]
+            scripts/config --set-str CONFIG_DEFAULT_HOSTNAME "(none)"
+
+            # ()  Local version - append to kernel release [CONFIG_LOCALVERSION]
+            scripts/config --set-str CONFIG_LOCALVERSION ""
+
+            # <*> Btrfs filesystem support [BTRFS_FS]
+            scripts/config -e BTRFS_FS
+
+            # <M> The Extended 4 (ext4) filesystem [CONFIG_EXT4_FS]
+            scripts/config -m CONFIG_EXT4_FS
+
+            # <*> USB HID transport layer
+            scripts/config -e CONFIG_USB_HID
+
+            # (X) Preemptible Kernel (Low-Latency Desktop) [CONFIG_PREEMPT]
+            scripts/config -e CONFIG_PREEMPT
+
+            # (X) Idle dynticks system (tickless idle) [CONFIG_NO_HZ_IDLE]
+            scripts/config -e CONFIG_NO_HZ_IDLE
+
+            # (X) Simple tick based cputime accounting [CONFIG_TICK_CPU_ACCOUNTING]
+            scripts/config -e CONFIG_TICK_CPU_ACCOUNTING
+
+            # [*] Automatic process group schedulin [CONFIG_SCHED_AUTOGROUP]
+            scripts/config -e CONFIG_SCHED_AUTOGROUP
+
+            # <M> Compressed RAM block device support [CONFIG_ZRAM]
+            #   Default zram compressor (zstd)  ---> [CONFIG_ZRAM_DEF_COMP_ZSTD]
+            scripts/config -m CONFIG_ZRAM
+            scripts/config -e CONFIG_ZRAM_DEF_COMP_ZSTD
+
+            # <M> exFAT filesystem support [CONFIG_EXFAT_FS]
+            scripts/config -m CONFIG_EXFAT_FS
+
+            # <M> NTFS file system support [CONFIG_NTFS_FS]
+            #   [*]   NTFS write support [CONFIG_NTFS_RW]
+            scripts/config -m CONFIG_NTFS_FS
+            scripts/config -e CONFIG_NTFS_RW
+
+            # <M> NTFS Read-Write file system support [CONFIG_NTFS3_FS]
+            scripts/config -m CONFIG_NTFS3_FS
+
+            # 刷新
+            scripts/config  --refresh
+
+            # 备份
             cp .config .config.opti
 
-            # 优化前后对比
-            echo "优化前后对比->"
-            scripts/diffconfig .config.merge .config.opti
-            read -p "<-优化前后对比"
+            # 扩展配置与优化前后对比
+            echo "扩展配置与优化前后对比->"
+            scripts/diffconfig .config.lfs .config.opti
+            read -p "<-扩展配置与优化前后对比"
 
             # 图形界面调整配置，配置后记得保存
-            make menuconfig
+            make ARCH=x86_64 menuconfig
 
-            # 优化前后对比
-            echo "图形界面调整对比->"
+            # 手动调整对比
+            echo "手动调整对比->"
             scripts/diffconfig .config.opti .config
-            read -p "<-图形界面调整对比"
+            read -p "<-手动调整对比"
 
             # 查看配置文件
             ls -lh .config*
 
+            [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            [ $? = 0 ] && make modules_install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
-                # touch _BUILD_DONE
+                touch _BUILD_DONE
             else
                 pwd
                 exit 1
