@@ -51,6 +51,8 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             ./configure --prefix=/usr
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
+            # https://www.linuxfromscratch.org/lfs/build-logs
+            # 官方也 XFAIL 2
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
@@ -74,18 +76,25 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr
+            FORCE_UNSAFE_CONFIGURE=1  \
+                ./configure --prefix=/usr
+
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            if [ $? = 0 ]; then
+                # https://www.linuxfromscratch.org/lfs/build-logs
+                # 官方也 1 failed unexpectedly.
+                make -j_LFS_BUILD_PROC -k check
+                read -p "$PKG_NAME CHECK DONE..."
+            fi
+
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
+                make -C doc install-html docdir=/usr/share/doc/tar-1.34
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd
-                read -p "FIXME: tar 部分测试失败，手动任意键继续..."
-                touch _BUILD_DONE
-                make install || exit 1
+                exit 1
             fi
         popd
     fi
@@ -102,13 +111,20 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             ./configure --prefix=/usr
-            sed -e 's/__attribute_nonnull__/__nonnull/' \
-                -i gnulib/lib/malloc/dynarray-skeleton.c
+
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
             [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 make TEXMF=/usr/share/texmf install-tex
+                pushd /usr/share/info
+                    rm -v dir
+                    for f in *
+                        do install-info $f dir 2>/dev/null
+                    done
+                popd
+
+                read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
                 pwd

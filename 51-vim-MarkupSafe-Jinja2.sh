@@ -15,7 +15,7 @@ fi
 
 # 来自chroot之后的调用
 pushd /sources/_LFS_VERSION
-    PKG_NAME=iproute2
+    PKG_NAME=vim
     PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
         tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
@@ -24,74 +24,93 @@ pushd /sources/_LFS_VERSION
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
-            # 规避arpd
-            sed -i /ARPD/d Makefile
-            rm -fv man/man8/arpd.8
+            # 修改 vimrc 配置文件的默认位置为 /etc
+            echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 
-            [ $? = 0 ] && make NETNS_RUN_DIR=/run/netns
-            [ $? = 0 ] && make SBINDIR=/usr/sbin install
-            if [ $? = 0 ]; then
-                mkdir -pv             /usr/share/doc/iproute2-5.19.0
-                cp -v COPYING README* /usr/share/doc/iproute2-5.19.0
-                read -p "$PKG_NAME ALL DONE..."
-                touch _BUILD_DONE
-            else
-                pwd
-                exit 1
-            fi
-        popd
-    fi
-popd
-
-pushd /sources/_LFS_VERSION
-    PKG_NAME=kbd
-    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
-        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
-        pushd $PKG_PATH
-            find ../.. -maxdepth 1 -type f -name "$PKG_NAME-*.patch" -exec patch -Np1 -i {} \;
-            [ $? = 0 ] || exit 1
-        popd
-    fi
-
-    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
-        pushd $PKG_PATH
-            # 删除多余的 resizecons 程序
-            sed -i '/RESIZECONS_PROGS=/s/yes/no/' configure
-            sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
-
-            ./configure --prefix=/usr --disable-vlock
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
-            [ $? = 0 ] && make install
-            if [ $? = 0 ]; then
-                mkdir -pv           /usr/share/doc/kbd-2.5.1
-                cp -R -v docs/doc/* /usr/share/doc/kbd-2.5.1
-                read -p "$PKG_NAME ALL DONE..."
-                touch _BUILD_DONE
-            else
-                pwd
-                exit 1
-            fi
-        popd
-    fi
-popd
-
-pushd /sources/_LFS_VERSION
-    PKG_NAME=libpipeline
-    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
-        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    fi
-
-    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
-        pushd $PKG_PATH
             ./configure --prefix=/usr
             [ $? = 0 ] && make -j_LFS_BUILD_PROC
-            [ $? = 0 ] && make -j_LFS_BUILD_PROC check && read -p "$PKG_NAME CHECK DONE..."
+            if [ $? = 0 ]; then
+                chown -Rv tester .
+                su tester -c "LANG=en_US.UTF-8 make -j1 test" &> vim-test.log
+                echo ------
+                tail -n 20 vim-test.log
+                read -p "$PKG_NAME CHECK DONE..."
+            fi
+
             [ $? = 0 ] && make install
+            if [ $? = 0 ]; then
+                ln -sv vim /usr/bin/vi
+                for L in  /usr/share/man/{,*/}man1/vim.1; do
+                    ln -sv vim.1 $(dirname $L)/vi.1
+                done
+
+                ln -sv ../vim/vim90/doc /usr/share/doc/vim-9.0.0228
+
+                cat > /etc/vimrc << "EOF"
+" Begin /etc/vimrc
+
+" Ensure defaults are set before customizing settings, not after
+source $VIMRUNTIME/defaults.vim
+let skip_defaults_vim=1
+
+set nocompatible
+set backspace=2
+set mouse=
+syntax on
+if (&term == "xterm") || (&term == "putty")
+  set background=dark
+endif
+
+" End /etc/vimrc
+EOF
+
+                read -p "$PKG_NAME ALL DONE..."
+                touch _BUILD_DONE
+            else
+                pwd
+                exit 1
+            fi
+        popd
+    fi
+popd
+
+pushd /sources/_LFS_VERSION
+    PKG_NAME=MarkupSafe
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
+        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    fi
+
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
+            pip3 wheel -w dist --no-build-isolation --no-deps $PWD
+            pip3 install --no-index --no-user --find-links dist Markupsafe
+
+            if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
+                touch _BUILD_DONE
+            else
+                pwd
+                exit 1
+            fi
+        popd
+    fi
+popd
+
+pushd /sources/_LFS_VERSION
+    PKG_NAME=Jinja2
+    PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage4
+        PKG_PATH=$(find stage4 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    fi
+
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
+            pip3 wheel -w dist --no-build-isolation --no-deps $PWD
+            pip3 install --no-index --no-user --find-links dist Jinja2
+
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE

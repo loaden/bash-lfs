@@ -71,8 +71,8 @@ bash `dirname ${BASH_SOURCE[0]}`/../50-make-patch-tar-texinfo.sh
 echo DONE
 echo
 
-echo -e "\033[31mKILL 51-MarkupSafe-Jinja2.sh ...\033[0m"
-bash `dirname ${BASH_SOURCE[0]}`/../51-MarkupSafe-Jinja2.sh
+echo -e "\033[31mKILL 51-vim-MarkupSafe-Jinja2.sh ...\033[0m"
+bash `dirname ${BASH_SOURCE[0]}`/../51-vim-MarkupSafe-Jinja2.sh
 [ $? = 0 ] || exit 2
 echo DONE
 echo
