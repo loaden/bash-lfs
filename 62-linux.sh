@@ -184,7 +184,7 @@ pushd /sources/_LFS_VERSION
             scripts/config  --refresh
 
             # 备份
-            cp .config .config.opti
+            cp -vf .config .config.opti
 
             # 扩展配置与优化前后对比
             echo "扩展配置与优化前后对比->"
