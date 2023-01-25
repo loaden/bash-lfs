@@ -140,7 +140,7 @@ pushd /sources/_LFS_VERSION
             scripts/config --set-str CONFIG_LOCALVERSION ""
 
             # <*> Btrfs filesystem support [BTRFS_FS]
-            scripts/config -e BTRFS_FS
+            scripts/config -m BTRFS_FS
 
             # <M> The Extended 4 (ext4) filesystem [CONFIG_EXT4_FS]
             scripts/config -m CONFIG_EXT4_FS
@@ -175,6 +175,10 @@ pushd /sources/_LFS_VERSION
 
             # <M> NTFS Read-Write file system support [CONFIG_NTFS3_FS]
             scripts/config -m CONFIG_NTFS3_FS
+
+            #  Module compression mode (None)  ---> [CONFIG_MODULE_COMPRESS_NONE]
+            scripts/config -e CONFIG_MODULE_COMPRESS_NONE
+            scripts/config -d MODULE_COMPRESS_ZSTD
 
             # 刷新
             scripts/config  --refresh

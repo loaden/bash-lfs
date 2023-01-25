@@ -625,8 +625,9 @@ EOF
 
 
 # 生成 initramfs
-mkinitramfs
-mv initrd.img-no-kmods /boot/initramfs.img
+mkinitramfs 5.19.2
+mv initrd.img-* /boot/initramfs.img
+ls -lh /boot
 
 # GRUB 安装与配置
 
