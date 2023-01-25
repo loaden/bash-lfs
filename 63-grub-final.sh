@@ -7,13 +7,18 @@ if [ $? = 0 ]; then
     source `dirname ${BASH_SOURCE[0]}`/lfs.sh
 
     # 下载 UEFI Boot for GRUB 的依赖源码
+    # BLFS国内镜像源 https://mirrors.aliyun.com/blfs/
     pushd $LFS/sources/$(getConf LFS_VERSION)
+        # 删除缓存
+        rm wget-*
+
         # 依赖1: https://linuxfromscratch.org/blfs/view/stable-systemd/postlfs/efivar.html
         PKG_NAME=efivar
         PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
         while [ -z $PKG_PATH ]
         do
-            wget https://github.com/rhboot/efivar/releases/download/38/efivar-38.tar.bz2
+            # wget https://github.com/rhboot/efivar/releases/download/38/efivar-38.tar.bz2
+            wget https://mirrors.aliyun.com/blfs/11.2/e/efivar-38.tar.bz2
             PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
             sleep 1
         done
@@ -23,7 +28,8 @@ if [ $? = 0 ]; then
         PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
         while [ -z $PKG_PATH ]
         do
-            wget https://mandoc.bsd.lv/snapshots/mandoc-1.14.6.tar.gz
+            # wget https://mandoc.bsd.lv/snapshots/mandoc-1.14.6.tar.gz
+            wget https://mirrors.aliyun.com/blfs/11.2/m/mandoc-1.14.6.tar.gz
             PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
             sleep 1
         done
@@ -33,7 +39,8 @@ if [ $? = 0 ]; then
         PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
         while [ -z $PKG_PATH ]
         do
-            wget https://github.com/rhboot/efibootmgr/archive/18/efibootmgr-18.tar.gz
+            # wget https://github.com/rhboot/efibootmgr/archive/18/efibootmgr-18.tar.gz
+            wget https://mirrors.aliyun.com/blfs/11.2/e/efibootmgr-18.tar.gz
             PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
             sleep 1
         done
@@ -57,7 +64,6 @@ if [ $? = 0 ]; then
             PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
             sleep 1
         done
-
     popd
 
     # 准备chroot
