@@ -64,6 +64,16 @@ if [ $? = 0 ]; then
             PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
             sleep 1
         done
+
+        # grub 依赖：https://linuxfromscratch.org/blfs/view/stable-systemd/postlfs/dosfstools.html
+        PKG_NAME=dosfstools
+        PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
+        while [ -z $PKG_PATH ]
+        do
+            wget https://mirrors.aliyun.com/blfs/11.2/d/dosfstools-4.2.tar.gz
+            PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
+            sleep 1
+        done
     popd
 
     # 准备chroot
@@ -186,6 +196,34 @@ pushd /sources/_LFS_VERSION
 popd
 
 pushd /sources/_LFS_VERSION
+    PKG_NAME=dosfstools
+    PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage5
+        PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    fi
+
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
+            ./configure --prefix=/usr    \
+                --enable-compat-symlinks \
+                --mandir=/usr/share/man  \
+                --docdir=/usr/share/doc/dosfstools-4.2 &&
+            make
+
+            [ $? = 0 ] && make install
+            if [ $? = 0 ]; then
+                read -p "$PKG_NAME ALL DONE..."
+                touch _BUILD_DONE
+            else
+                pwd
+                exit 1
+            fi
+        popd
+    fi
+popd
+
+pushd /sources/_LFS_VERSION
     PKG_NAME=grub
     PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
@@ -203,7 +241,6 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr        \
                 --sysconfdir=/etc    \
                 --disable-efiemu     \
-                --enable-grub-mkfont \
                 --with-platform=efi  \
                 --target=x86_64      \
                 --disable-werror     &&
@@ -225,8 +262,48 @@ popd
 
 
 # GRUB 安装与配置
-grub-install
-grub-mkconfig -o /boot/grub/grub.cfg
+
+# 启动入口-1 （grub）
+# To install GRUB with the EFI application installed into the hardcoded path EFI/BOOT/BOOTX64.EFI
+# so the EFI firmware can find and load it.
+# The command will overwrite /boot/efi/EFI/BOOT/BOOTX64.EFI.
+# It may break a bootloader already installed there. Back it up if you are not sure.
+# The remaining GRUB files are installed into /boot/grub directory and will be loaded by BOOTX64.EFI during system boot.
+grub-install --target=x86_64-efi --removable
+
+# 启动入口-2 （LFS）
+# If the system is booted with UEFI and systemd, efivarfs will be mounted automatically.
+# However in the LFS chroot environment it still needs to be mounted manually.
+mountpoint /sys/firmware/efi/efivars || mount -v -t efivarfs efivarfs /sys/firmware/efi/efivars
+grub-install --bootloader-id=LFS --recheck
+
+# 检查生成的两个启动项
+efibootmgr | cut -f 1
+
+# 编写启动菜单
+cat > /boot/grub/grub.cfg << EOF
+# Begin /boot/grub/grub.cfg
+set default=0
+set timeout=5
+
+insmod part_gpt
+insmod btrfs
+set root=(hd0,6)
+
+if loadfont /boot/grub/fonts/unicode.pf2; then
+    set gfxmode=auto
+    insmod all_video
+    terminal_output gfxterm
+fi
+
+menuentry "Linux From Scratch"  {
+    linux /boot/vmlinuz root=/dev/nvme0n1p6 ro
+}
+
+menuentry "Firmware Setup" {
+    fwsetup
+}
+EOF
 
 # 系统发布信息
 echo 11.2-systemd > /etc/lfs-release
