@@ -54,6 +54,16 @@ if [ $? = 0 ]; then
             PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
             sleep 1
         done
+
+        # initramfs 依赖: https://www.linuxfromscratch.org/blfs/view/svn/general/cpio.html
+        PKG_NAME=cpio
+        PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
+        while [ -z $PKG_PATH ]
+        do
+            wget https://ftp.gnu.org/gnu/cpio/cpio-2.13.tar.bz2
+            PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
+            sleep 1
+        done
     popd
 
     # 准备chroot
@@ -199,6 +209,45 @@ pushd /sources/_LFS_VERSION
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+                read -p "$PKG_NAME ALL DONE..."
+                touch _BUILD_DONE
+            else
+                pwd
+                exit 1
+            fi
+        popd
+    fi
+popd
+
+pushd /sources/_LFS_VERSION
+    PKG_NAME=cpio
+    PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    if [ -z $PKG_PATH ]; then
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage5
+        PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    fi
+
+    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
+        pushd $PKG_PATH
+            sed -i '/The name/,+2 d' src/global.c
+
+            ./configure --prefix=/usr \
+                --enable-mt   \
+                --with-rmt=/usr/libexec/rmt &&
+            make &&
+            makeinfo --html            -o doc/html      doc/cpio.texi &&
+            makeinfo --html --no-split -o doc/cpio.html doc/cpio.texi &&
+            makeinfo --plaintext       -o doc/cpio.txt  doc/cpio.texi
+
+            [ $? = 0 ] && make check && read -p "$PKG_NAME CHECK DONE..."
+            [ $? = 0 ] && make install
+            if [ $? = 0 ]; then
+                install -v -m755 -d /usr/share/doc/cpio-2.13/html &&
+                install -v -m644    doc/html/* \
+                                    /usr/share/doc/cpio-2.13/html &&
+                install -v -m644    doc/cpio.{html,txt} \
+                                    /usr/share/doc/cpio-2.13
+
                 read -p "$PKG_NAME ALL DONE..."
                 touch _BUILD_DONE
             else
