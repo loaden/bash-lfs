@@ -331,7 +331,18 @@ pushd /sources/_LFS_VERSION
         pushd $PKG_PATH
             ./configure --prefix=/usr --disable-documentation
 
-            [ $? = 0 ] && make
+            [ $? = 0 ] && make && make fssum
+            if [ $? = 0 ]; then
+                pushd tests
+                    ./fsck-tests.sh
+                    ./mkfs-tests.sh
+                    ./cli-tests.sh
+                    ./convert-tests.sh
+                    ./misc-tests.sh
+                    ./fuzz-tests.sh
+                    read -p "$PKG_NAME TEST DONE..."
+                popd
+            fi
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
@@ -359,18 +370,7 @@ pushd /sources/_LFS_VERSION
                 --sbindir=/sbin     \
                 --disable-documentation
 
-            [ $? = 0 ] && make && make fssum
-            if [ $? = 0 ]; then
-                pushd tests
-                    ./fsck-tests.sh
-                    ./mkfs-tests.sh
-                    ./cli-tests.sh
-                    ./convert-tests.sh
-                    ./misc-tests.sh
-                    ./fuzz-tests.sh
-                    read -p "$PKG_NAME TEST DONE..."
-                popd
-            fi
+            [ $? = 0 ] && make
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
@@ -756,8 +756,9 @@ EOF
 
 # dracut 生成 initramfs
 dracut /boot/initramfs.img \
-    --force --no-kernel --hostonly --modules "rootfs-block base btrfs" \
-    --early-microcode --fstab --zstd
+    --force --hostonly --modules "rootfs-block base btrfs systemd kernel-modules udev-rules" \
+    --kver 5.19.2 --fstab --zstd
+ls -lh /boot
 
 exit
 
