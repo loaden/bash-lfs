@@ -110,3 +110,13 @@ cat > /etc/fstab << "EOF"
 /dev/nvme0n1p6   /              btrfs   noatime,subvol=@lfs   0      0
 /dev/nvme0n1p6   /home          btrfs   noatime,subvol=@home  0      0
 EOF
+
+# 用户 shell
+cat > /root/.bashrc << "EOF"
+[[ $- != *i* ]] && return
+alias ls='ls --color=auto'
+PS1='[\u@\h \W]\$ '
+EOF
+cat > /root/.bash_profile << "EOF"
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+EOF
