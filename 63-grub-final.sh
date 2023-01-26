@@ -349,10 +349,7 @@ popd
 
 # dracut 生成 initramfs
 dracut /boot/initramfs.img \
-    --modules "rootfs-block base btrfs systemd kernel-modules udev-rules
-               systemd-initrd systemd-modules-load systemd-udevd watchdog watchdog-modules
-               kernel-modules-extra virtfs virtiofs usrmount fs-lib
-               img-lib uefi-lib" \
+    --modules "base rootfs-block kernel-modules udev-rules systemd-initrd watchdog"
     --force --hostonly --fstab --zstd --kver 5.19.2
 ls -lh /boot
 
