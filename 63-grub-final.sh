@@ -756,11 +756,12 @@ EOF
 
 # dracut 生成 initramfs
 dracut /boot/initramfs.img \
-    --force --hostonly --modules "rootfs-block base btrfs systemd kernel-modules udev-rules" \
-    --kver 5.19.2 --fstab --zstd
+    --modules "rootfs-block base btrfs systemd kernel-modules udev-rules
+               systemd-initrd systemd-modules-load systemd-udevd watchdog watchdog-modules
+               kernel-modules-extra virtfs virtiofs usrmount fs-lib
+               img-lib uefi-lib" \
+    --force --hostonly --fstab --zstd --kver 5.19.2
 ls -lh /boot
-
-exit
 
 # GRUB 安装与配置
 
