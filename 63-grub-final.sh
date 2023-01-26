@@ -23,17 +23,6 @@ if [ $? = 0 ]; then
             sleep 1
         done
 
-        # efivar 依赖: https://linuxfromscratch.org/blfs/view/stable-systemd/general/mandoc.html
-        PKG_NAME=mandoc
-        PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
-        while [ -z $PKG_PATH ]
-        do
-            # wget https://mandoc.bsd.lv/snapshots/mandoc-1.14.6.tar.gz
-            wget https://mirrors.aliyun.com/blfs/11.2/m/mandoc-1.14.6.tar.gz
-            PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
-            sleep 1
-        done
-
         # 依赖2：https://linuxfromscratch.org/blfs/view/stable-systemd/postlfs/efibootmgr.html
         PKG_NAME=efibootmgr
         PKG_PATH=$(find . -maxdepth 1 -type f -name "$PKG_NAME-*.*")
@@ -112,33 +101,6 @@ fi
 # 详见 Packages for UEFI Boot
 
 pushd /sources/_LFS_VERSION
-    PKG_NAME=mandoc
-    PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage5
-        PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
-    fi
-
-    if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
-        pushd $PKG_PATH
-            ./configure
-            [ $? = 0 ] && make mandoc
-            [ $? = 0 ] && make regress && read -p "$PKG_NAME CHECK DONE..."
-            if [ $? = 0 ]; then
-                install -vm755 mandoc   /usr/bin &&
-                install -vm644 mandoc.1 /usr/share/man/man1
-
-                read -p "$PKG_NAME ALL DONE..."
-                touch _BUILD_DONE
-            else
-                pwd
-                exit 1
-            fi
-        popd
-    fi
-popd
-
-pushd /sources/_LFS_VERSION
     PKG_NAME=efivar
     PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
@@ -153,6 +115,8 @@ pushd /sources/_LFS_VERSION
             # Now adapt this package for a change in glibc-2.36
             sed '/sys\/mount\.h/d' -i src/util.h
             sed '/unistd\.h/a#include <sys/mount.h>' -i src/gpt.c src/linux.c
+            # 不编译文档，移除对 mandoc 的依赖
+            sed '/SUBDIRS := /s/src docs/src/' -i Makefile
 
             [ $? = 0 ] && make
             [ $? = 0 ] && make install LIBDIR=/usr/lib
@@ -382,6 +346,8 @@ pushd /sources/_LFS_VERSION
         popd
     fi
 popd
+
+exit
 
 # dracut 生成 initramfs
 dracut /boot/initramfs.img \
