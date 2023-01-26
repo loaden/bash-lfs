@@ -347,8 +347,6 @@ pushd /sources/_LFS_VERSION
     fi
 popd
 
-exit
-
 # dracut 生成 initramfs
 dracut /boot/initramfs.img \
     --modules "rootfs-block base btrfs systemd kernel-modules udev-rules
