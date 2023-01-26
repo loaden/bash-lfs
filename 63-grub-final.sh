@@ -10,7 +10,7 @@ if [ $? = 0 ]; then
     # BLFS国内镜像源 https://mirrors.aliyun.com/blfs/
     pushd $LFS/sources/$(getConf LFS_VERSION)
         # 删除缓存
-        rm wget-*
+        rm -fv wget-*
 
         # 依赖1: https://linuxfromscratch.org/blfs/view/stable-systemd/postlfs/efivar.html
         PKG_NAME=efivar
