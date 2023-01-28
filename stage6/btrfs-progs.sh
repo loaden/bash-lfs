@@ -85,17 +85,17 @@ pushd /sources/_LFS_VERSION
             ./configure --prefix=/usr --disable-documentation
 
             [ $? = 0 ] && make && make fssum
-            if [ $? = 0 ]; then
-                # pushd tests
-                #     ./fsck-tests.sh
-                #     ./mkfs-tests.sh
-                #     ./cli-tests.sh
-                #     ./convert-tests.sh
-                #     ./misc-tests.sh
-                #     ./fuzz-tests.sh
-                #     read -p "$PKG_NAME TEST DONE..."
-                # popd
-            fi
+            # if [ $? = 0 ]; then
+            #     pushd tests
+            #         ./fsck-tests.sh
+            #         ./mkfs-tests.sh
+            #         ./cli-tests.sh
+            #         ./convert-tests.sh
+            #         ./misc-tests.sh
+            #         ./fuzz-tests.sh
+            #         read -p "$PKG_NAME TEST DONE..."
+            #     popd
+            # fi
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 read -p "$PKG_NAME ALL DONE..."
