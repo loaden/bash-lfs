@@ -35,7 +35,7 @@ if [ ! -f $LFS/sources/DONE ]; then
     pushd $LFS/sources/$(getConf LFS_VERSION)
         md5sum -c md5sums
         if [ $? = 0 ]; then
-            mkdir -v stage{1,2,3,4,5}
+            mkdir -v stage{1,2,3,4,5,6}
             touch ../DONE
         fi
     popd
