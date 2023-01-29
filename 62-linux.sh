@@ -139,40 +139,44 @@ pushd /sources/_LFS_VERSION
             # ()  Local version - append to kernel release [CONFIG_LOCALVERSION]
             scripts/config --set-str CONFIG_LOCALVERSION ""
 
-            # <*> Btrfs filesystem support [BTRFS_FS]
-            scripts/config -m BTRFS_FS
-
-            # <M> The Extended 4 (ext4) filesystem [CONFIG_EXT4_FS]
-            scripts/config -m CONFIG_EXT4_FS
-
+            # 支持2.4G无线键盘
             # <*> USB HID transport layer
             scripts/config -e CONFIG_USB_HID
 
+            # 提高桌面响应速度
             # (X) Preemptible Kernel (Low-Latency Desktop) [CONFIG_PREEMPT]
             scripts/config -e CONFIG_PREEMPT
-
             # (X) Idle dynticks system (tickless idle) [CONFIG_NO_HZ_IDLE]
             scripts/config -e CONFIG_NO_HZ_IDLE
-
             # (X) Simple tick based cputime accounting [CONFIG_TICK_CPU_ACCOUNTING]
             scripts/config -e CONFIG_TICK_CPU_ACCOUNTING
 
+            # 桌面系统的“鸡血补丁”，开启后能显著降低操作延迟、提升程序响应速度
             # [*] Automatic process group schedulin [CONFIG_SCHED_AUTOGROUP]
             scripts/config -e CONFIG_SCHED_AUTOGROUP
 
+            # 内存压缩
             # <M> Compressed RAM block device support [CONFIG_ZRAM]
             #   Default zram compressor (zstd)  ---> [CONFIG_ZRAM_DEF_COMP_ZSTD]
             scripts/config -m CONFIG_ZRAM
             scripts/config -e CONFIG_ZRAM_DEF_COMP_ZSTD
 
+            # 内核模块不压缩
+            #  Module compression mode (None)  ---> [CONFIG_MODULE_COMPRESS_NONE]
+            scripts/config -e CONFIG_MODULE_COMPRESS_NONE
+            scripts/config -d MODULE_COMPRESS_ZSTD
+
+            # 文件系统
+            # <*> Btrfs filesystem support [BTRFS_FS]
+            scripts/config -e BTRFS_FS
+            # <M> The Extended 4 (ext4) filesystem [CONFIG_EXT4_FS]
+            scripts/config -m CONFIG_EXT4_FS
             # <M> exFAT filesystem support [CONFIG_EXFAT_FS]
             scripts/config -m CONFIG_EXFAT_FS
-
             # <M> NTFS file system support [CONFIG_NTFS_FS]
             #   [*]   NTFS write support [CONFIG_NTFS_RW]
             scripts/config -m CONFIG_NTFS_FS
             scripts/config -e CONFIG_NTFS_RW
-
             # <M> NTFS Read-Write file system support [CONFIG_NTFS3_FS]
             scripts/config -m CONFIG_NTFS3_FS
 
