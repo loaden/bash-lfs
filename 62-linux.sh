@@ -25,7 +25,10 @@ pushd /sources/_LFS_VERSION
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
         pushd $PKG_PATH
             # 确保内核源代码树绝对干净
-            make mrproper
+            # make mrproper
+
+            # 删除默认配置
+            rm -fv .config
 
             # 生成默认配置
             make ARCH=x86_64 defconfig
