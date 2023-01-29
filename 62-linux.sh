@@ -269,7 +269,7 @@ install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
 EOF
 
                 read -p "$PKG_NAME ALL DONE..."
-                touch _BUILD_DONE
+                # touch _BUILD_DONE
             else
                 pwd
                 exit 1
