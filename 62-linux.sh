@@ -221,10 +221,8 @@ pushd /sources/_LFS_VERSION
             scripts/config -e CONFIG_WLAN_VENDOR_INTEL
             # <*>     Intel Wireless WiFi Next Gen AGN - Wireless-N/Advanced-N/Ultimate-N (iwlwifi) [CONFIG_IWLWIFI]
             scripts/config -e CONFIG_IWLWIFI
-            # <*>       Intel Wireless WiFi DVM Firmware support [CONFIG_IWLDVM]
-            scripts/config -e CONFIG_IWLDVM
-            # <*>       Intel Wireless WiFi MVM Firmware support [CONFIG_IWLMVM]
-            scripts/config -e CONFIG_IWLMVM
+            # <M>       Intel Wireless WiFi MVM Firmware support [CONFIG_IWLMVM]
+            scripts/config -m CONFIG_IWLMVM
 
             # 刷新
             scripts/config  --refresh
