@@ -32,15 +32,15 @@ pushd /sources/_LFS_VERSION
 
             # 生成默认配置
             make ARCH=x86_64 defconfig
-            mv .config .config.def
+            mv -fv .config .config.def
 
             # 根据当前模块使用情况生成内核配置
             make ARCH=x86_64 localmodconfig
-            mv .config .config.mod
+            mv -fv .config .config.mod
 
             # 合并配置
             scripts/kconfig/merge_config.sh -y .config.def .config.mod
-            cp .config .config.merge
+            cp -fv .config .config.merge
 
             # 合并前后对比
             echo "合并前后对比->"
@@ -125,7 +125,7 @@ pushd /sources/_LFS_VERSION
             scripts/config  --refresh
 
             # 备份
-            cp .config .config.lfs
+            cp -fv .config .config.lfs
 
             # 推荐配置调整前后对比
             echo "推荐配置调整前后对比->"
