@@ -44,10 +44,10 @@ fi
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=lzo
-    PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage6 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage5
-        PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage6
+        PKG_PATH=$(find stage6 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
@@ -74,10 +74,10 @@ popd
 
 pushd /sources/_LFS_VERSION
     PKG_NAME=btrfs-progs
-    PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
+    PKG_PATH=$(find stage6 -maxdepth 1 -type d -name "$PKG_NAME-*")
     if [ -z $PKG_PATH ]; then
-        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage5
-        PKG_PATH=$(find stage5 -maxdepth 1 -type d -name "$PKG_NAME-*")
+        tar -xpvf $(find . -maxdepth 1 -type f -name "$PKG_NAME-*.tar.*") --directory stage6
+        PKG_PATH=$(find stage6 -maxdepth 1 -type d -name "$PKG_NAME-*")
     fi
 
     if [ ! -f $PKG_PATH/_BUILD_DONE ]; then
