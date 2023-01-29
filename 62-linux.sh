@@ -253,7 +253,7 @@ pushd /sources/_LFS_VERSION
             [ $? = 0 ] && make install
             if [ $? = 0 ]; then
                 # 备份配置
-                cp -iv .config /boot/config-5.19.2
+                cp -fv .config /boot/config-5.19.2
                 # 安装文档
                 install -d /usr/share/doc/linux-5.19.2
                 cp -r Documentation/* /usr/share/doc/linux-5.19.2
