@@ -183,9 +183,48 @@ pushd /sources/_LFS_VERSION
             # <M> NTFS Read-Write file system support [CONFIG_NTFS3_FS]
             scripts/config -m CONFIG_NTFS3_FS
 
-            #  Module compression mode (None)  ---> [CONFIG_MODULE_COMPRESS_NONE]
-            scripts/config -e CONFIG_MODULE_COMPRESS_NONE
-            scripts/config -d MODULE_COMPRESS_ZSTD
+            # iwd无线网络（同时支持有线网络、DHCP）：https://wiki.gentoo.org/wiki/Iwd
+            # [*]   Diffie-Hellman operations on retained keys [CONFIG_KEY_DH_OPERATIONS]
+            scripts/config -e CONFIG_KEY_DH_OPERATIONS
+            # <*>   cfg80211 - wireless configuration API [CONFIG_CFG80211]
+            scripts/config -e CONFIG_CFG80211
+            # *** Block modes ***
+            # {*}   ECB support [CONFIG_CRYPTO_ECB]
+            scripts/config -e CONFIG_CRYPTO_ECB
+            # *** Digest ***
+            # <*>   MD4 digest algorithm [CONFIG_CRYPTO_MD4]
+            scripts/config -e CONFIG_CRYPTO_MD4
+            # <*>   SHA1 digest algorithm (SSSE3/AVX/AVX2/SHA-NI) [CONFIG_CRYPTO_SHA1_SSSE3]
+            scripts/config -e CONFIG_CRYPTO_SHA1_SSSE3
+            # <*>   SHA256 digest algorithm (SSSE3/AVX/AVX2/SHA-NI) [CONFIG_CRYPTO_SHA256_SSSE3]
+            scripts/config -e CONFIG_CRYPTO_SHA256_SSSE3
+            # <*>   SHA512 digest algorithm (SSSE3/AVX/AVX2) [CONFIG_CRYPTO_SHA512_SSSE3]
+            scripts/config -e CONFIG_CRYPTO_SHA512_SSSE3
+            # *** Ciphers ***
+            # <*>   AES cipher algorithms (AES-NI) [CONFIG_CRYPTO_AES_NI_INTEL]
+            scripts/config -e CONFIG_CRYPTO_AES_NI_INTEL
+            # <*>   DES and Triple DES EDE cipher algorithms [CONFIG_CRYPTO_DES]
+            scripts/config -e CONFIG_CRYPTO_DES
+            # <*>   Triple DES EDE cipher algorithm (x86-64) [CONFIG_CRYPTO_DES3_EDE_X86_64]
+            scripts/config -e CONFIG_CRYPTO_DES3_EDE_X86_64
+            # *** Random Number Generation ***
+            # <*>   User-space interface for hash algorithms [CONFIG_CRYPTO_USER_API_HASH]
+            scripts/config -e CONFIG_CRYPTO_USER_API_HASH
+            # <*>   User-space interface for symmetric key cipher algorithms [CONFIG_CRYPTO_USER_API_SKCIPHER]
+            scripts/config -e CONFIG_CRYPTO_USER_API_SKCIPHER
+            # <*>   PKCS#8 private key parser [CONFIG_PKCS8_PRIVATE_KEY_PARSER]
+            scripts/config -e CONFIG_PKCS8_PRIVATE_KEY_PARSER
+
+            # Intel 无线网卡
+            # Device Drivers > Network device support > Wireless LAN
+            # [*]   Intel devices [CONFIG_WLAN_VENDOR_INTEL]
+            scripts/config -e CONFIG_WLAN_VENDOR_INTEL
+            # <*>     Intel Wireless WiFi Next Gen AGN - Wireless-N/Advanced-N/Ultimate-N (iwlwifi) [CONFIG_IWLWIFI]
+            scripts/config -e CONFIG_IWLWIFI
+            # <*>       Intel Wireless WiFi DVM Firmware support [CONFIG_IWLDVM]
+            scripts/config -e CONFIG_IWLDVM
+            # <*>       Intel Wireless WiFi MVM Firmware support [CONFIG_IWLMVM]
+            scripts/config -e CONFIG_IWLMVM
 
             # 刷新
             scripts/config  --refresh
